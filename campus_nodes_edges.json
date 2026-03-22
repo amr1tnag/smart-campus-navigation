@@ -1,0 +1,1840 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "name": "",
+      "lat": 19.04573799013241,
+      "lng": 73.02440264988161,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 2,
+      "name": "",
+      "lat": 19.04565983610688,
+      "lng": 73.02468358888927,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 3,
+      "name": "",
+      "lat": 19.04565738100574,
+      "lng": 73.0247576113396,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 4,
+      "name": "",
+      "lat": 19.045750674814172,
+      "lng": 73.02491085079768,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 5,
+      "name": "",
+      "lat": 19.045875066476455,
+      "lng": 73.02471432335625,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 6,
+      "name": "",
+      "lat": 19.045337597552177,
+      "lng": 73.02466920914287,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 7,
+      "name": "",
+      "lat": 19.04542495761416,
+      "lng": 73.02458519183264,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 8,
+      "name": "",
+      "lat": 19.04495409354007,
+      "lng": 73.02402080646644,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 9,
+      "name": "",
+      "lat": 19.044658667483347,
+      "lng": 73.0242905873408,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 10,
+      "name": "",
+      "lat": 19.043593687459364,
+      "lng": 73.02459385744748,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 11,
+      "name": "",
+      "lat": 19.043835346535957,
+      "lng": 73.02432334315131,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 12,
+      "name": "",
+      "lat": 19.043104935936796,
+      "lng": 73.02457610430162,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 13,
+      "name": "",
+      "lat": 19.042990919765487,
+      "lng": 73.02457024771243,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 14,
+      "name": "",
+      "lat": 19.042757690807093,
+      "lng": 73.02485222646808,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 15,
+      "name": "",
+      "lat": 19.043196383100423,
+      "lng": 73.02541618397927,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 16,
+      "name": "",
+      "lat": 19.042568513339035,
+      "lng": 73.02509119839257,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 17,
+      "name": "",
+      "lat": 19.042423534339164,
+      "lng": 73.02517986658142,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 18,
+      "name": "",
+      "lat": 19.042097331125746,
+      "lng": 73.02494501570604,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 19,
+      "name": "",
+      "lat": 19.041970474147732,
+      "lng": 73.02473892208099,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 20,
+      "name": "",
+      "lat": 19.041941025192614,
+      "lng": 73.02434590633007,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 21,
+      "name": "",
+      "lat": 19.04212561800324,
+      "lng": 73.02436822328318,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 22,
+      "name": "",
+      "lat": 19.041619155713974,
+      "lng": 73.02402590046995,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 23,
+      "name": "",
+      "lat": 19.041861845811894,
+      "lng": 73.02376297546382,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 24,
+      "name": "",
+      "lat": 19.041967108875653,
+      "lng": 73.02372585663892,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 25,
+      "name": "",
+      "lat": 19.041725163054394,
+      "lng": 73.02362076194183,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 26,
+      "name": "",
+      "lat": 19.04147697565527,
+      "lng": 73.02388965765692,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 27,
+      "name": "",
+      "lat": 19.040925216110992,
+      "lng": 73.02332279746526,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 28,
+      "name": "",
+      "lat": 19.041246758158948,
+      "lng": 73.02414152713783,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 29,
+      "name": "",
+      "lat": 19.040881560182626,
+      "lng": 73.02413243687113,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 30,
+      "name": "",
+      "lat": 19.040524954324795,
+      "lng": 73.02381427750507,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 31,
+      "name": "",
+      "lat": 19.04102477517054,
+      "lng": 73.02413546696067,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 32,
+      "name": "",
+      "lat": 19.04101904657358,
+      "lng": 73.02458543520478,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 33,
+      "name": "",
+      "lat": 19.04148311376217,
+      "lng": 73.0251817235806,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 34,
+      "name": "",
+      "lat": 19.0418717944072,
+      "lng": 73.02558287458979,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 35,
+      "name": "",
+      "lat": 19.042050116613538,
+      "lng": 73.02669814746903,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 36,
+      "name": "",
+      "lat": 19.04293789268958,
+      "lng": 73.0246342359359,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 37,
+      "name": "",
+      "lat": 19.04388802788303,
+      "lng": 73.02468022296904,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 38,
+      "name": "",
+      "lat": 19.04386111781095,
+      "lng": 73.02559777377809,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 39,
+      "name": "",
+      "lat": 19.04427451253507,
+      "lng": 73.02632891474008,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 40,
+      "name": "",
+      "lat": 19.044375942532056,
+      "lng": 73.02625007982624,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 41,
+      "name": "",
+      "lat": 19.044406992518446,
+      "lng": 73.02628730742347,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 42,
+      "name": "",
+      "lat": 19.045236954100403,
+      "lng": 73.02473805500043,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 43,
+      "name": "",
+      "lat": 19.04519326393546,
+      "lng": 73.02538018557328,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 44,
+      "name": "",
+      "lat": 19.044878070262826,
+      "lng": 73.02566080819022,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 45,
+      "name": "",
+      "lat": 19.044759482389523,
+      "lng": 73.0257218848759,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 46,
+      "name": "",
+      "lat": 19.040819497921277,
+      "lng": 73.02809042012959,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 47,
+      "name": "",
+      "lat": 19.04101274505757,
+      "lng": 73.02695965293131,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 48,
+      "name": "",
+      "lat": 19.04101576454171,
+      "lng": 73.02689257352154,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 49,
+      "name": "",
+      "lat": 19.04091612151707,
+      "lng": 73.02687660223364,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 50,
+      "name": "",
+      "lat": 19.040961413808873,
+      "lng": 73.02658911904649,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 51,
+      "name": "",
+      "lat": 19.040846102870333,
+      "lng": 73.02339533556932,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 52,
+      "name": "",
+      "lat": 19.04141528854983,
+      "lng": 73.02395678254314,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 53,
+      "name": "",
+      "lat": 19.04195370564088,
+      "lng": 73.02449788723541,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 54,
+      "name": "",
+      "lat": 19.044423369607998,
+      "lng": 73.0263349087484,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 55,
+      "name": "",
+      "lat": 19.043930554906055,
+      "lng": 73.0267891231774,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 56,
+      "name": "",
+      "lat": 19.043061887893785,
+      "lng": 73.02754454000345,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 57,
+      "name": "",
+      "lat": 19.04251712829607,
+      "lng": 73.02791056671401,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 58,
+      "name": "",
+      "lat": 19.0418324954544,
+      "lng": 73.02809747396975,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 59,
+      "name": "",
+      "lat": 19.040797032050037,
+      "lng": 73.02822317124708,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 60,
+      "name": "",
+      "lat": 19.04575190860666,
+      "lng": 73.02435986433426,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 61,
+      "name": "",
+      "lat": 19.04564958961697,
+      "lng": 73.02430902224785,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 62,
+      "name": "",
+      "lat": 19.04549289494672,
+      "lng": 73.02423703366463,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 63,
+      "name": "",
+      "lat": 19.0451096031598,
+      "lng": 73.0239913557383,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 64,
+      "name": "",
+      "lat": 19.044737583813486,
+      "lng": 73.02365742457656,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 65,
+      "name": "",
+      "lat": 19.04469533324088,
+      "lng": 73.02362170161172,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 66,
+      "name": "",
+      "lat": 19.044680333888934,
+      "lng": 73.02364374035028,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 67,
+      "name": "",
+      "lat": 19.04434065111957,
+      "lng": 73.02396811840697,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 68,
+      "name": "",
+      "lat": 19.044094695950037,
+      "lng": 73.02358447102159,
+      "type": "path",
+      "accessible": true
+    },
+    {
+      "id": 69,
+      "name": "Media Gate",
+      "lat": 19.04440270765518,
+      "lng": 73.02628580544945,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 70,
+      "name": "Dy Patil Stadium",
+      "lat": 19.042047655735118,
+      "lng": 73.02669768611008,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 71,
+      "name": "Stadium Gate",
+      "lat": 19.040818662118525,
+      "lng": 73.02809149935183,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 72,
+      "name": "Stadium Bldng",
+      "lat": 19.040961068318097,
+      "lng": 73.02658542168669,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 73,
+      "name": "University Ground",
+      "lat": 19.04318548037803,
+      "lng": 73.02540383336608,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 74,
+      "name": "Medical University",
+      "lat": 19.041960188791947,
+      "lng": 73.02372578326663,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 75,
+      "name": "Medical Gate",
+      "lat": 19.040523630081083,
+      "lng": 73.02381434590848,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 76,
+      "name": "Dr Dy Patil Hospital",
+      "lat": 19.041016281334805,
+      "lng": 73.02458478777945,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 77,
+      "name": "Girls Hostel/Staff Quarter",
+      "lat": 19.043831507126043,
+      "lng": 73.02432371039546,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 78,
+      "name": "Mandir",
+      "lat": 19.04587410409779,
+      "lng": 73.02471420675579,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 79,
+      "name": "hospital gate",
+      "lat": 19.040928087620955,
+      "lng": 73.02332280952453,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 80,
+      "name": "University Gate",
+      "lat": 19.045738192552818,
+      "lng": 73.02440335324442,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 81,
+      "name": "Engineering College",
+      "lat": 19.044479523335298,
+      "lng": 73.02522864770464,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 82,
+      "name": "Centre Of Excelence",
+      "lat": 19.044499093612956,
+      "lng": 73.02430268415097,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 83,
+      "name": "COE Gate",
+      "lat": 19.044679421473106,
+      "lng": 73.02364339225772,
+      "type": "poi",
+      "accessible": true
+    },
+    {
+      "id": 84,
+      "name": "School of Architecture",
+      "lat": 19.044093072519686,
+      "lng": 73.02358330183273,
+      "type": "poi",
+      "accessible": true
+    }
+  ],
+  "edges": [
+    {
+      "from": 1,
+      "to": 2,
+      "distance": 30.781152373916456,
+      "time": 21.986537409940325,
+      "accessible": true
+    },
+    {
+      "from": 2,
+      "to": 1,
+      "distance": 30.781152373916456,
+      "time": 21.986537409940325,
+      "accessible": true
+    },
+    {
+      "from": 2,
+      "to": 3,
+      "distance": 7.785138620771462,
+      "time": 5.560813300551044,
+      "accessible": true
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "distance": 7.785138620771462,
+      "time": 5.560813300551044,
+      "accessible": true
+    },
+    {
+      "from": 3,
+      "to": 4,
+      "distance": 19.158315124930535,
+      "time": 13.684510803521812,
+      "accessible": true
+    },
+    {
+      "from": 4,
+      "to": 3,
+      "distance": 19.158315124930535,
+      "time": 13.684510803521812,
+      "accessible": true
+    },
+    {
+      "from": 4,
+      "to": 5,
+      "distance": 24.859827207102345,
+      "time": 17.757019433644533,
+      "accessible": true
+    },
+    {
+      "from": 5,
+      "to": 4,
+      "distance": 24.859827207102345,
+      "time": 17.757019433644533,
+      "accessible": true
+    },
+    {
+      "from": 2,
+      "to": 6,
+      "distance": 35.86315563810793,
+      "time": 25.61653974150567,
+      "accessible": true
+    },
+    {
+      "from": 6,
+      "to": 2,
+      "distance": 35.86315563810793,
+      "time": 25.61653974150567,
+      "accessible": true
+    },
+    {
+      "from": 6,
+      "to": 7,
+      "distance": 13.128084264807498,
+      "time": 9.37720304629107,
+      "accessible": true
+    },
+    {
+      "from": 7,
+      "to": 6,
+      "distance": 13.128084264807498,
+      "time": 9.37720304629107,
+      "accessible": true
+    },
+    {
+      "from": 7,
+      "to": 8,
+      "distance": 79.12254964276893,
+      "time": 56.5161068876921,
+      "accessible": true
+    },
+    {
+      "from": 8,
+      "to": 7,
+      "distance": 79.12254964276893,
+      "time": 56.5161068876921,
+      "accessible": true
+    },
+    {
+      "from": 8,
+      "to": 9,
+      "distance": 43.39576690824621,
+      "time": 30.99697636303301,
+      "accessible": true
+    },
+    {
+      "from": 9,
+      "to": 8,
+      "distance": 43.39576690824621,
+      "time": 30.99697636303301,
+      "accessible": true
+    },
+    {
+      "from": 6,
+      "to": 10,
+      "distance": 194.0756301412231,
+      "time": 138.62545010087365,
+      "accessible": true
+    },
+    {
+      "from": 10,
+      "to": 6,
+      "distance": 194.0756301412231,
+      "time": 138.62545010087365,
+      "accessible": true
+    },
+    {
+      "from": 10,
+      "to": 11,
+      "distance": 39.122005716217785,
+      "time": 27.94428979729842,
+      "accessible": true
+    },
+    {
+      "from": 11,
+      "to": 10,
+      "distance": 39.122005716217785,
+      "time": 27.94428979729842,
+      "accessible": true
+    },
+    {
+      "from": 10,
+      "to": 12,
+      "distance": 54.378715730734235,
+      "time": 38.841939807667316,
+      "accessible": true
+    },
+    {
+      "from": 12,
+      "to": 10,
+      "distance": 54.378715730734235,
+      "time": 38.841939807667316,
+      "accessible": true
+    },
+    {
+      "from": 12,
+      "to": 13,
+      "distance": 12.692955913146388,
+      "time": 9.066397080818849,
+      "accessible": true
+    },
+    {
+      "from": 13,
+      "to": 12,
+      "distance": 12.692955913146388,
+      "time": 9.066397080818849,
+      "accessible": true
+    },
+    {
+      "from": 13,
+      "to": 14,
+      "distance": 39.382984695617274,
+      "time": 28.13070335401234,
+      "accessible": true
+    },
+    {
+      "from": 14,
+      "to": 13,
+      "distance": 39.382984695617274,
+      "time": 28.13070335401234,
+      "accessible": true
+    },
+    {
+      "from": 14,
+      "to": 15,
+      "distance": 76.76804648279423,
+      "time": 54.834318916281596,
+      "accessible": true
+    },
+    {
+      "from": 15,
+      "to": 14,
+      "distance": 76.76804648279423,
+      "time": 54.834318916281596,
+      "accessible": true
+    },
+    {
+      "from": 14,
+      "to": 16,
+      "distance": 32.763164623419506,
+      "time": 23.40226044529965,
+      "accessible": true
+    },
+    {
+      "from": 16,
+      "to": 14,
+      "distance": 32.763164623419506,
+      "time": 23.40226044529965,
+      "accessible": true
+    },
+    {
+      "from": 16,
+      "to": 17,
+      "distance": 18.62109359681988,
+      "time": 13.300781140585629,
+      "accessible": true
+    },
+    {
+      "from": 17,
+      "to": 16,
+      "distance": 18.62109359681988,
+      "time": 13.300781140585629,
+      "accessible": true
+    },
+    {
+      "from": 17,
+      "to": 18,
+      "distance": 43.875138839087505,
+      "time": 31.339384885062504,
+      "accessible": true
+    },
+    {
+      "from": 18,
+      "to": 17,
+      "distance": 43.875138839087505,
+      "time": 31.339384885062504,
+      "accessible": true
+    },
+    {
+      "from": 18,
+      "to": 19,
+      "distance": 25.850368159474947,
+      "time": 18.46454868533925,
+      "accessible": true
+    },
+    {
+      "from": 19,
+      "to": 18,
+      "distance": 25.850368159474947,
+      "time": 18.46454868533925,
+      "accessible": true
+    },
+    {
+      "from": 19,
+      "to": 20,
+      "distance": 41.43959751758905,
+      "time": 29.59971251256361,
+      "accessible": true
+    },
+    {
+      "from": 20,
+      "to": 19,
+      "distance": 41.43959751758905,
+      "time": 29.59971251256361,
+      "accessible": true
+    },
+    {
+      "from": 20,
+      "to": 21,
+      "distance": 20.659387993889226,
+      "time": 14.756705709920876,
+      "accessible": true
+    },
+    {
+      "from": 21,
+      "to": 20,
+      "distance": 20.659387993889226,
+      "time": 14.756705709920876,
+      "accessible": true
+    },
+    {
+      "from": 20,
+      "to": 22,
+      "distance": 49.11537291422871,
+      "time": 35.08240922444908,
+      "accessible": true
+    },
+    {
+      "from": 22,
+      "to": 20,
+      "distance": 49.11537291422871,
+      "time": 35.08240922444908,
+      "accessible": true
+    },
+    {
+      "from": 22,
+      "to": 23,
+      "distance": 38.626378577868486,
+      "time": 27.590270412763207,
+      "accessible": true
+    },
+    {
+      "from": 23,
+      "to": 22,
+      "distance": 38.626378577868486,
+      "time": 27.590270412763207,
+      "accessible": true
+    },
+    {
+      "from": 23,
+      "to": 24,
+      "distance": 12.337856793786498,
+      "time": 8.812754852704643,
+      "accessible": true
+    },
+    {
+      "from": 24,
+      "to": 23,
+      "distance": 12.337856793786498,
+      "time": 8.812754852704643,
+      "accessible": true
+    },
+    {
+      "from": 23,
+      "to": 25,
+      "distance": 21.31756767853177,
+      "time": 15.226834056094122,
+      "accessible": true
+    },
+    {
+      "from": 25,
+      "to": 23,
+      "distance": 21.31756767853177,
+      "time": 15.226834056094122,
+      "accessible": true
+    },
+    {
+      "from": 25,
+      "to": 26,
+      "distance": 39.50247430341239,
+      "time": 28.216053073865996,
+      "accessible": true
+    },
+    {
+      "from": 26,
+      "to": 25,
+      "distance": 39.50247430341239,
+      "time": 28.216053073865996,
+      "accessible": true
+    },
+    {
+      "from": 26,
+      "to": 27,
+      "distance": 85.52381814343187,
+      "time": 61.08844153102277,
+      "accessible": true
+    },
+    {
+      "from": 27,
+      "to": 26,
+      "distance": 85.52381814343187,
+      "time": 61.08844153102277,
+      "accessible": true
+    },
+    {
+      "from": 26,
+      "to": 28,
+      "distance": 36.82651045669747,
+      "time": 26.30465032621248,
+      "accessible": true
+    },
+    {
+      "from": 28,
+      "to": 26,
+      "distance": 36.82651045669747,
+      "time": 26.30465032621248,
+      "accessible": true
+    },
+    {
+      "from": 28,
+      "to": 29,
+      "distance": 40.61940164401583,
+      "time": 29.013858317154167,
+      "accessible": true
+    },
+    {
+      "from": 29,
+      "to": 28,
+      "distance": 40.61940164401583,
+      "time": 29.013858317154167,
+      "accessible": true
+    },
+    {
+      "from": 29,
+      "to": 30,
+      "distance": 51.87210084601588,
+      "time": 37.05150060429706,
+      "accessible": true
+    },
+    {
+      "from": 30,
+      "to": 29,
+      "distance": 51.87210084601588,
+      "time": 37.05150060429706,
+      "accessible": true
+    },
+    {
+      "from": 31,
+      "to": 32,
+      "distance": 47.30086658419891,
+      "time": 33.78633327442779,
+      "accessible": true
+    },
+    {
+      "from": 32,
+      "to": 31,
+      "distance": 47.30086658419891,
+      "time": 33.78633327442779,
+      "accessible": true
+    },
+    {
+      "from": 19,
+      "to": 33,
+      "distance": 71.43550299614164,
+      "time": 51.02535928295831,
+      "accessible": true
+    },
+    {
+      "from": 33,
+      "to": 19,
+      "distance": 71.43550299614164,
+      "time": 51.02535928295831,
+      "accessible": true
+    },
+    {
+      "from": 33,
+      "to": 34,
+      "distance": 60.38056131127417,
+      "time": 43.12897236519584,
+      "accessible": true
+    },
+    {
+      "from": 34,
+      "to": 33,
+      "distance": 60.38056131127417,
+      "time": 43.12897236519584,
+      "accessible": true
+    },
+    {
+      "from": 34,
+      "to": 35,
+      "distance": 118.8918380516594,
+      "time": 84.922741465471,
+      "accessible": true
+    },
+    {
+      "from": 35,
+      "to": 34,
+      "distance": 118.8918380516594,
+      "time": 84.922741465471,
+      "accessible": true
+    },
+    {
+      "from": 36,
+      "to": 37,
+      "distance": 105.76072948111377,
+      "time": 75.54337820079556,
+      "accessible": true
+    },
+    {
+      "from": 37,
+      "to": 36,
+      "distance": 105.76072948111377,
+      "time": 75.54337820079556,
+      "accessible": true
+    },
+    {
+      "from": 37,
+      "to": 38,
+      "distance": 96.48936289968726,
+      "time": 68.92097349977662,
+      "accessible": true
+    },
+    {
+      "from": 38,
+      "to": 37,
+      "distance": 96.48936289968726,
+      "time": 68.92097349977662,
+      "accessible": true
+    },
+    {
+      "from": 38,
+      "to": 39,
+      "distance": 89.54800810077484,
+      "time": 63.96286292912489,
+      "accessible": true
+    },
+    {
+      "from": 39,
+      "to": 38,
+      "distance": 89.54800810077484,
+      "time": 63.96286292912489,
+      "accessible": true
+    },
+    {
+      "from": 39,
+      "to": 40,
+      "distance": 13.995229656067375,
+      "time": 9.996592611476697,
+      "accessible": true
+    },
+    {
+      "from": 40,
+      "to": 39,
+      "distance": 13.995229656067375,
+      "time": 9.996592611476697,
+      "accessible": true
+    },
+    {
+      "from": 40,
+      "to": 41,
+      "distance": 5.218391781550656,
+      "time": 3.7274227011076113,
+      "accessible": true
+    },
+    {
+      "from": 41,
+      "to": 40,
+      "distance": 5.218391781550656,
+      "time": 3.7274227011076113,
+      "accessible": true
+    },
+    {
+      "from": 37,
+      "to": 3,
+      "distance": 196.91116932572362,
+      "time": 140.65083523265974,
+      "accessible": true
+    },
+    {
+      "from": 3,
+      "to": 37,
+      "distance": 196.91116932572362,
+      "time": 140.65083523265974,
+      "accessible": true
+    },
+    {
+      "from": 42,
+      "to": 43,
+      "distance": 67.66784860618196,
+      "time": 48.334177575844265,
+      "accessible": true
+    },
+    {
+      "from": 43,
+      "to": 42,
+      "distance": 67.66784860618196,
+      "time": 48.334177575844265,
+      "accessible": true
+    },
+    {
+      "from": 43,
+      "to": 44,
+      "distance": 45.80785385852113,
+      "time": 32.719895613229376,
+      "accessible": true
+    },
+    {
+      "from": 44,
+      "to": 43,
+      "distance": 45.80785385852113,
+      "time": 32.719895613229376,
+      "accessible": true
+    },
+    {
+      "from": 44,
+      "to": 45,
+      "distance": 14.666036988622386,
+      "time": 10.475740706158847,
+      "accessible": true
+    },
+    {
+      "from": 45,
+      "to": 44,
+      "distance": 14.666036988622386,
+      "time": 10.475740706158847,
+      "accessible": true
+    },
+    {
+      "from": 45,
+      "to": 40,
+      "distance": 70.00756622588432,
+      "time": 50.00540444706023,
+      "accessible": true
+    },
+    {
+      "from": 40,
+      "to": 45,
+      "distance": 70.00756622588432,
+      "time": 50.00540444706023,
+      "accessible": true
+    },
+    {
+      "from": 46,
+      "to": 47,
+      "distance": 120.7828683933234,
+      "time": 86.27347742380243,
+      "accessible": true
+    },
+    {
+      "from": 47,
+      "to": 46,
+      "distance": 120.7828683933234,
+      "time": 86.27347742380243,
+      "accessible": true
+    },
+    {
+      "from": 47,
+      "to": 48,
+      "distance": 7.0587685246154965,
+      "time": 5.041977517582498,
+      "accessible": true
+    },
+    {
+      "from": 48,
+      "to": 47,
+      "distance": 7.0587685246154965,
+      "time": 5.041977517582498,
+      "accessible": true
+    },
+    {
+      "from": 48,
+      "to": 49,
+      "distance": 11.206255757605174,
+      "time": 8.00446839828941,
+      "accessible": true
+    },
+    {
+      "from": 49,
+      "to": 48,
+      "distance": 11.206255757605174,
+      "time": 8.00446839828941,
+      "accessible": true
+    },
+    {
+      "from": 49,
+      "to": 50,
+      "distance": 30.63445287114796,
+      "time": 21.881752050819973,
+      "accessible": true
+    },
+    {
+      "from": 50,
+      "to": 49,
+      "distance": 30.63445287114796,
+      "time": 21.881752050819973,
+      "accessible": true
+    },
+    {
+      "from": 51,
+      "to": 52,
+      "distance": 86.53535299162239,
+      "time": 61.81096642258743,
+      "accessible": true
+    },
+    {
+      "from": 52,
+      "to": 51,
+      "distance": 86.53535299162239,
+      "time": 61.81096642258743,
+      "accessible": true
+    },
+    {
+      "from": 52,
+      "to": 53,
+      "distance": 82.57833886650322,
+      "time": 58.984527761788016,
+      "accessible": true
+    },
+    {
+      "from": 53,
+      "to": 52,
+      "distance": 82.57833886650322,
+      "time": 58.984527761788016,
+      "accessible": true
+    },
+    {
+      "from": 41,
+      "to": 54,
+      "distance": 5.324415504779778,
+      "time": 3.803153931985556,
+      "accessible": true
+    },
+    {
+      "from": 54,
+      "to": 41,
+      "distance": 5.324415504779778,
+      "time": 3.803153931985556,
+      "accessible": true
+    },
+    {
+      "from": 54,
+      "to": 55,
+      "distance": 72.6785570077522,
+      "time": 51.913255005537295,
+      "accessible": true
+    },
+    {
+      "from": 55,
+      "to": 54,
+      "distance": 72.6785570077522,
+      "time": 51.913255005537295,
+      "accessible": true
+    },
+    {
+      "from": 55,
+      "to": 56,
+      "distance": 125.03787525792124,
+      "time": 89.31276804137232,
+      "accessible": true
+    },
+    {
+      "from": 56,
+      "to": 55,
+      "distance": 125.03787525792124,
+      "time": 89.31276804137232,
+      "accessible": true
+    },
+    {
+      "from": 56,
+      "to": 57,
+      "distance": 71.75961165112453,
+      "time": 51.25686546508895,
+      "accessible": true
+    },
+    {
+      "from": 57,
+      "to": 56,
+      "distance": 71.75961165112453,
+      "time": 51.25686546508895,
+      "accessible": true
+    },
+    {
+      "from": 57,
+      "to": 58,
+      "distance": 78.62179226014543,
+      "time": 56.158423042961026,
+      "accessible": true
+    },
+    {
+      "from": 58,
+      "to": 57,
+      "distance": 78.62179226014543,
+      "time": 56.158423042961026,
+      "accessible": true
+    },
+    {
+      "from": 58,
+      "to": 59,
+      "distance": 115.8938452581657,
+      "time": 82.78131804154694,
+      "accessible": true
+    },
+    {
+      "from": 59,
+      "to": 58,
+      "distance": 115.8938452581657,
+      "time": 82.78131804154694,
+      "accessible": true
+    },
+    {
+      "from": 59,
+      "to": 46,
+      "distance": 14.175461232226555,
+      "time": 10.125329451590398,
+      "accessible": true
+    },
+    {
+      "from": 46,
+      "to": 59,
+      "distance": 14.175461232226555,
+      "time": 10.125329451590398,
+      "accessible": true
+    },
+    {
+      "from": 1,
+      "to": 60,
+      "distance": 4.755962044034993,
+      "time": 3.397115745739281,
+      "accessible": true
+    },
+    {
+      "from": 60,
+      "to": 1,
+      "distance": 4.755962044034993,
+      "time": 3.397115745739281,
+      "accessible": true
+    },
+    {
+      "from": 60,
+      "to": 61,
+      "distance": 12.56986489885443,
+      "time": 8.978474927753165,
+      "accessible": true
+    },
+    {
+      "from": 61,
+      "to": 60,
+      "distance": 12.56986489885443,
+      "time": 8.978474927753165,
+      "accessible": true
+    },
+    {
+      "from": 61,
+      "to": 62,
+      "distance": 18.99570424456834,
+      "time": 13.568360174691673,
+      "accessible": true
+    },
+    {
+      "from": 62,
+      "to": 61,
+      "distance": 18.99570424456834,
+      "time": 13.568360174691673,
+      "accessible": true
+    },
+    {
+      "from": 62,
+      "to": 63,
+      "distance": 49.83260419567139,
+      "time": 35.59471728262242,
+      "accessible": true
+    },
+    {
+      "from": 63,
+      "to": 62,
+      "distance": 49.83260419567139,
+      "time": 35.59471728262242,
+      "accessible": true
+    },
+    {
+      "from": 63,
+      "to": 64,
+      "distance": 54.25071250061471,
+      "time": 38.75050892901051,
+      "accessible": true
+    },
+    {
+      "from": 64,
+      "to": 63,
+      "distance": 54.25071250061471,
+      "time": 38.75050892901051,
+      "accessible": true
+    },
+    {
+      "from": 64,
+      "to": 65,
+      "distance": 6.014159711176665,
+      "time": 4.29582836512619,
+      "accessible": true
+    },
+    {
+      "from": 65,
+      "to": 64,
+      "distance": 6.014159711176665,
+      "time": 4.29582836512619,
+      "accessible": true
+    },
+    {
+      "from": 65,
+      "to": 66,
+      "distance": 2.8544213517445813,
+      "time": 2.0388723941032727,
+      "accessible": true
+    },
+    {
+      "from": 66,
+      "to": 65,
+      "distance": 2.8544213517445813,
+      "time": 2.0388723941032727,
+      "accessible": true
+    },
+    {
+      "from": 66,
+      "to": 67,
+      "distance": 50.88334504721634,
+      "time": 36.34524646229739,
+      "accessible": true
+    },
+    {
+      "from": 67,
+      "to": 66,
+      "distance": 50.88334504721634,
+      "time": 36.34524646229739,
+      "accessible": true
+    },
+    {
+      "from": 67,
+      "to": 68,
+      "distance": 48.724242496107394,
+      "time": 34.80303035436243,
+      "accessible": true
+    },
+    {
+      "from": 68,
+      "to": 67,
+      "distance": 48.724242496107394,
+      "time": 34.80303035436243,
+      "accessible": true
+    },
+    {
+      "from": 1,
+      "to": 60,
+      "distance": 4.755962044034993,
+      "time": 3.397115745739281,
+      "accessible": true
+    },
+    {
+      "from": 60,
+      "to": 1,
+      "distance": 4.755962044034993,
+      "time": 3.397115745739281,
+      "accessible": true
+    },
+    {
+      "from": 65,
+      "to": 66,
+      "distance": 2.8544213517445813,
+      "time": 2.0388723941032727,
+      "accessible": true
+    },
+    {
+      "from": 66,
+      "to": 65,
+      "distance": 2.8544213517445813,
+      "time": 2.0388723941032727,
+      "accessible": true
+    },
+    {
+      "from": 69,
+      "to": 41,
+      "distance": 0.5019288451913387,
+      "time": 0.35852060370809913,
+      "accessible": true
+    },
+    {
+      "from": 41,
+      "to": 69,
+      "distance": 0.5019288451913387,
+      "time": 0.35852060370809913,
+      "accessible": true
+    },
+    {
+      "from": 70,
+      "to": 35,
+      "distance": 0.2779009545823919,
+      "time": 0.19850068184456565,
+      "accessible": true
+    },
+    {
+      "from": 35,
+      "to": 70,
+      "distance": 0.2779009545823919,
+      "time": 0.19850068184456565,
+      "accessible": true
+    },
+    {
+      "from": 71,
+      "to": 46,
+      "distance": 0.1466475789197489,
+      "time": 0.1047482706569635,
+      "accessible": true
+    },
+    {
+      "from": 46,
+      "to": 71,
+      "distance": 0.1466475789197489,
+      "time": 0.1047482706569635,
+      "accessible": true
+    },
+    {
+      "from": 72,
+      "to": 50,
+      "distance": 0.39052719936873886,
+      "time": 0.2789479995490992,
+      "accessible": true
+    },
+    {
+      "from": 50,
+      "to": 72,
+      "distance": 0.39052719936873886,
+      "time": 0.2789479995490992,
+      "accessible": true
+    },
+    {
+      "from": 73,
+      "to": 15,
+      "distance": 1.776225302337768,
+      "time": 1.2687323588126915,
+      "accessible": true
+    },
+    {
+      "from": 15,
+      "to": 73,
+      "distance": 1.776225302337768,
+      "time": 1.2687323588126915,
+      "accessible": true
+    },
+    {
+      "from": 74,
+      "to": 24,
+      "distance": 0.7695168472410786,
+      "time": 0.5496548908864848,
+      "accessible": true
+    },
+    {
+      "from": 24,
+      "to": 74,
+      "distance": 0.7695168472410786,
+      "time": 0.5496548908864848,
+      "accessible": true
+    },
+    {
+      "from": 75,
+      "to": 30,
+      "distance": 0.14742461581450644,
+      "time": 0.10530329701036176,
+      "accessible": true
+    },
+    {
+      "from": 30,
+      "to": 75,
+      "distance": 0.14742461581450644,
+      "time": 0.10530329701036176,
+      "accessible": true
+    },
+    {
+      "from": 76,
+      "to": 32,
+      "distance": 0.31492106209237497,
+      "time": 0.22494361578026786,
+      "accessible": true
+    },
+    {
+      "from": 32,
+      "to": 76,
+      "distance": 0.31492106209237497,
+      "time": 0.22494361578026786,
+      "accessible": true
+    },
+    {
+      "from": 77,
+      "to": 11,
+      "distance": 0.42866441553271145,
+      "time": 0.30618886823765107,
+      "accessible": true
+    },
+    {
+      "from": 11,
+      "to": 77,
+      "distance": 0.42866441553271145,
+      "time": 0.30618886823765107,
+      "accessible": true
+    },
+    {
+      "from": 78,
+      "to": 5,
+      "distance": 0.10771113305338074,
+      "time": 0.07693652360955767,
+      "accessible": true
+    },
+    {
+      "from": 5,
+      "to": 78,
+      "distance": 0.10771113305338074,
+      "time": 0.07693652360955767,
+      "accessible": true
+    },
+    {
+      "from": 79,
+      "to": 27,
+      "distance": 0.31929985571604313,
+      "time": 0.2280713255114594,
+      "accessible": true
+    },
+    {
+      "from": 27,
+      "to": 79,
+      "distance": 0.31929985571604313,
+      "time": 0.2280713255114594,
+      "accessible": true
+    },
+    {
+      "from": 80,
+      "to": 1,
+      "distance": 0.07727945830720627,
+      "time": 0.055199613076575914,
+      "accessible": true
+    },
+    {
+      "from": 1,
+      "to": 80,
+      "distance": 0.07727945830720627,
+      "time": 0.055199613076575914,
+      "accessible": true
+    },
+    {
+      "from": 81,
+      "to": 45,
+      "distance": 60.47169635240325,
+      "time": 43.19406882314518,
+      "accessible": true
+    },
+    {
+      "from": 45,
+      "to": 81,
+      "distance": 60.47169635240325,
+      "time": 43.19406882314518,
+      "accessible": true
+    },
+    {
+      "from": 82,
+      "to": 9,
+      "distance": 17.789302113318385,
+      "time": 12.70664436665599,
+      "accessible": true
+    },
+    {
+      "from": 9,
+      "to": 82,
+      "distance": 17.789302113318385,
+      "time": 12.70664436665599,
+      "accessible": true
+    },
+    {
+      "from": 83,
+      "to": 66,
+      "distance": 0.10785160664044124,
+      "time": 0.07703686188602947,
+      "accessible": true
+    },
+    {
+      "from": 66,
+      "to": 83,
+      "distance": 0.10785160664044124,
+      "time": 0.07703686188602947,
+      "accessible": true
+    },
+    {
+      "from": 84,
+      "to": 68,
+      "distance": 0.218378044518698,
+      "time": 0.15598431751335573,
+      "accessible": true
+    },
+    {
+      "from": 68,
+      "to": 84,
+      "distance": 0.218378044518698,
+      "time": 0.15598431751335573,
+      "accessible": true
+    }
+  ]
+}

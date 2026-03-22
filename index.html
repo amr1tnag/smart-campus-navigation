@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Campus Navigation System | DY Patil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  </head>
+  <body>
+
+    <header class="main-header">
+      <div class="header-left">
+        <img src="University Logo.png" alt="University Logo" class="logo">
+        <div class="branding">
+          <h1>D.Y. PATIL UNIVERSITY</h1>
+          <p>Smart Campus Navigation</p>
+        </div>
+      </div>
+    </header>
+
+    <div id="map-container">
+      <div id="map"></div>
+
+      <div id="controls">
+        <div class="control-content">
+          <label for="start">Start Location</label>
+          <select id="start">
+            <option value="">Select a start location</option>
+          </select>
+    
+          <label for="end">End Location</label>
+          <select id="end">
+            <option value="">Select an end location</option>
+          </select>
+
+          <label for="algorithm">Algorithm</label>
+          <select id="algorithm">
+            <option value="">Choose an algorithm</option>
+            <option value="bfs">BFS</option>
+            <option value="dfs">DFS</option>
+            <option value="dijkstra">Dijkstra's Algorithm</option>
+          </select>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="accessibility" />
+            Accessible Route
+          </label>
+          <button id="findRoute">Find Route</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/graph.js"></script>
+    <script src="js/algorithms.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+      var map = L.map('map').setView([19.0443, 73.0245], 17);
+      L.tileLayer("https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=YmEOZSxLEE87oOVe10Ps", {
+        maxZoom: 22,
+        attribution: '&copy; OpenStreetMap',
+      }).addTo(map);
+    </script>
+  </body>
+</html>
