@@ -1,241 +1,197 @@
 import json
 import math
 
+# =========================
+# Distance utilities
+# =========================
 def haversine_distance(coord1, coord2):
-    """
-    Calculate the Haversine distance between two points on the Earth's surface.
-    """
     lat1, lon1 = coord1
     lat2, lon2 = coord2
-    R = 6371000  # Radius of Earth in meters
+    R = 6371000  # meters
 
     phi1 = math.radians(lat1)
     phi2 = math.radians(lat2)
-
-    delta_phi = math.radians(lat2 - lat1)
-    delta_lambda = math.radians(lon2 - lon1)
+    dphi = math.radians(lat2 - lat1)
+    dlambda = math.radians(lon2 - lon1)
 
     a = (
-        math.sin(delta_phi / 2.0) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
+        math.sin(dphi / 2) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
     )
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    return R * c  # Distance in meters
 
-def find_nearest_node(lat, lon, nodes, exclude_id=None, exclude_types=None):
-    """
-    Find the nearest node to the given latitude and longitude, excluding certain node IDs or types.
-    """
-    min_distance = float('inf')
-    nearest_node_id = None
-    for node_id, node in nodes.items():
-        if exclude_id is not None and node_id == exclude_id:
-            continue
-        if exclude_types and node.get('type') in exclude_types:
-            continue
-        distance = haversine_distance((lat, lon), (node['lat'], node['lng']))
-        if distance < min_distance:
-            min_distance = distance
-            nearest_node_id = node_id
-    return nearest_node_id
-
-def connect_node_to_nearest_node(node_id, lat, lon, nodes, edges, accessible, exclude_types=None):
-    """
-    Connects a node to the nearest node in the graph, excluding nodes of certain types.
-    """
-    if nodes:
-        nearest_node_id = find_nearest_node(lat, lon, nodes, exclude_id=node_id, exclude_types=exclude_types)
-        if nearest_node_id and nearest_node_id != node_id:
-            from_node = nodes[node_id]
-            to_node = nodes[nearest_node_id]
-
-            distance = haversine_distance(
-                (from_node['lat'], from_node['lng']),
-                (to_node['lat'], to_node['lng'])
-            )
-            time = distance / 1.4  # Average walking speed in m/s
-
-            # Create the edge from node to nearest node
-            edge = {
-                'from': node_id,
-                'to': nearest_node_id,
-                'distance': distance,
-                'time': time,
-                'accessible': accessible
-            }
-            edges.append(edge)
-
-            # Also add the reverse edge if the graph is undirected
-            reverse_edge = {
-                'from': nearest_node_id,
-                'to': node_id,
-                'distance': distance,
-                'time': time,
-                'accessible': accessible
-            }
-            edges.append(reverse_edge)
-
-# Check if a node exists within a threshold
-def node_exists(lat, lon, nodes, threshold):
-    for node in nodes.values():
-        distance = haversine_distance((lat, lon), (node['lat'], node['lng']))
-        if distance <= threshold:
-            return node['id']
-    return None
-
-# Load the GeoJSON data
-with open('data.geojson', 'r') as f:
-    data = json.load(f)
+# =========================
+# Load GeoJSON
+# =========================
+with open("data/data.geojson", "r", encoding="utf-8") as f:
+    geo = json.load(f)
 
 nodes = {}
 edges = []
-node_id_counter = 1  # To assign unique IDs to nodes
+node_id = 1
 
-# Define the distance threshold (in meters)
-NODE_MATCH_THRESHOLD = 1.0
+path_node_ids = set()
+poi_node_ids = set()
 
-# Separate features by geometry type
-line_features = []
-polygon_features = []
+NODE_SNAP = 1.5      # meters (merge duplicate nodes)
+POI_CONNECT = 150    # meters (POI → path)
+PATH_SNAP = 5        # meters (path continuity)
 
-for feature in data['features']:
-    geometry_type = feature['geometry']['type']
-    if geometry_type == 'LineString':
-        line_features.append(feature)
-    elif geometry_type == 'Polygon':
-        polygon_features.append(feature)
-    # You can add more geometry types if needed
+# =========================
+# Helpers
+# =========================
+def find_existing_node(lat, lon):
+    for n in nodes.values():
+        if haversine_distance((lat, lon), (n["lat"], n["lng"])) <= NODE_SNAP:
+            return n["id"]
+    return None
 
-# Process LineString features first (paths)
-for feature in line_features:
-    properties = feature.get('properties', {})
-    tags = properties  # Assuming tags are directly in properties
+def find_nearest_path_node(lat, lon):
+    best = None
+    best_dist = float("inf")
+    for pid in path_node_ids:
+        p = nodes[pid]
+        d = haversine_distance((lat, lon), (p["lat"], p["lng"]))
+        if d < best_dist:
+            best_dist = d
+            best = pid
+    return best, best_dist
 
-    # Determine accessibility
-    accessible = True
 
-    coordinates = feature['geometry']['coordinates']
-    nodes_in_way = []
+# =========================
+# 1️⃣ Build PATH network
+# =========================
+for feature in geo["features"]:
+    if feature["geometry"]["type"] != "LineString":
+        continue
 
-    # Process each coordinate pair
-    for coord in coordinates:
-        lon, lat = coord  # GeoJSON uses [longitude, latitude]
-        # Check if node already exists within threshold
-        existing_node_id = node_exists(lat, lon, nodes, NODE_MATCH_THRESHOLD)
-        if existing_node_id is not None:
-            node_id = existing_node_id
+    coords = feature["geometry"]["coordinates"]
+    seq = []
+
+    for lon, lat in coords:
+        existing = find_existing_node(lat, lon)
+        if existing:
+            nid = existing
         else:
-            node_id = node_id_counter
-            node_id_counter += 1
-            nodes[node_id] = {
-                'id': node_id,
-                'name': '',  # Paths typically don't have names
-                'lat': lat,
-                'lng': lon,
-                'accessible': accessible,
-                'type': 'path'
+            nid = node_id
+            nodes[nid] = {
+                "id": nid,
+                "name": "",
+                "lat": lat,
+                "lng": lon,
+                "type": "path",
+                "accessible": True
             }
-        nodes_in_way.append(node_id)
+            path_node_ids.add(nid)
+            node_id += 1
+        seq.append(nid)
 
-    # Create edges between consecutive nodes
-    for i in range(len(nodes_in_way) - 1):
-        from_node_id = nodes_in_way[i]
-        to_node_id = nodes_in_way[i + 1]
-        from_node = nodes[from_node_id]
-        to_node = nodes[to_node_id]
-
-        distance = haversine_distance(
-            (from_node['lat'], from_node['lng']),
-            (to_node['lat'], to_node['lng'])
+    for i in range(len(seq) - 1):
+        a, b = seq[i], seq[i + 1]
+        d = haversine_distance(
+            (nodes[a]["lat"], nodes[a]["lng"]),
+            (nodes[b]["lat"], nodes[b]["lng"])
         )
-        time = distance / 1.4  # Average walking speed in m/s
+        edges.append({
+            "from": a,
+            "to": b,
+            "distance": d,
+            "time": d / 1.4,
+            "accessible": True
+        })
+        edges.append({
+            "from": b,
+            "to": a,
+            "distance": d,
+            "time": d / 1.4,
+            "accessible": True
+        })
 
-        edge = {
-            'from': from_node_id,
-            'to': to_node_id,
-            'distance': distance,
-            'time': time,
-            'accessible': accessible,
-            'name': ''  # Paths typically don't have names
-        }
-        edges.append(edge)
 
-# Process Polygon features next (buildings)
-for feature in polygon_features:
-    properties = feature.get('properties', {})
-    tags = properties  # Assuming tags are directly in properties
+# =========================
+# 2️⃣ Snap PATH breaks
+# =========================
+path_list = list(path_node_ids)
 
-    # Extract the name from properties
-    feature_name = properties.get('name', '')
+for i in range(len(path_list)):
+    for j in range(i + 1, len(path_list)):
+        a = nodes[path_list[i]]
+        b = nodes[path_list[j]]
 
-    # Only process named Polygons (buildings)
-    if feature_name:
-        # Determine accessibility
-        accessible = True
+        d = haversine_distance(
+            (a["lat"], a["lng"]),
+            (b["lat"], b["lng"])
+        )
 
-        # Process the outer ring
-        outer_ring = feature['geometry']['coordinates'][0]
-        nodes_in_building = []
+        if d <= PATH_SNAP:
+            edges.append({
+                "from": a["id"],
+                "to": b["id"],
+                "distance": d,
+                "time": d / 1.4,
+                "accessible": True
+            })
+            edges.append({
+                "from": b["id"],
+                "to": a["id"],
+                "distance": d,
+                "time": d / 1.4,
+                "accessible": True
+            })
 
-        # Process each coordinate pair in the outer ring
-        for coord in outer_ring:
-            lon, lat = coord
-            # Check if node already exists within threshold
-            existing_node_id = node_exists(lat, lon, nodes, NODE_MATCH_THRESHOLD)
-            if existing_node_id is not None:
-                node_id = existing_node_id
-                if not nodes[node_id]['name']:
-                    nodes[node_id]['name'] = feature_name
-            else:
-                node_id = node_id_counter
-                node_id_counter += 1
-                nodes[node_id] = {
-                    'id': node_id,
-                    'name': feature_name,
-                    'lat': lat,
-                    'lng': lon,
-                    'accessible': accessible,
-                    'type': 'building'
-                }
-            nodes_in_building.append(node_id)
 
-            # Connect this node to the nearest node in the path network, excluding other building nodes
-            connect_node_to_nearest_node(
-                node_id, lat, lon, nodes, edges, accessible, exclude_types={'building'}
-            )
+# =========================
+# 3️⃣ Add POIs (Points)
+# =========================
+for feature in geo["features"]:
+    if feature["geometry"]["type"] != "Point":
+        continue
 
-        # Create edges between consecutive nodes (forming the building perimeter)
-        for i in range(len(nodes_in_building)):
-            from_node_id = nodes_in_building[i]
-            to_node_id = nodes_in_building[(i + 1) % len(nodes_in_building)]
-            from_node = nodes[from_node_id]
-            to_node = nodes[to_node_id]
+    lon, lat = feature["geometry"]["coordinates"]
+    name = feature.get("properties", {}).get("name", "")
 
-            distance = haversine_distance(
-                (from_node['lat'], from_node['lng']),
-                (to_node['lat'], to_node['lng'])
-            )
-            time = distance / 1.4  # Average walking speed in m/s
+    nid = node_id
+    nodes[nid] = {
+        "id": nid,
+        "name": name,
+        "lat": lat,
+        "lng": lon,
+        "type": "poi",
+        "accessible": True
+    }
+    poi_node_ids.add(nid)
+    node_id += 1
 
-            edge = {
-                'from': from_node_id,
-                'to': to_node_id,
-                'distance': distance,
-                'time': time,
-                'accessible': accessible,
-                'name': feature_name
-            }
-            edges.append(edge)
+    nearest, dist = find_nearest_path_node(lat, lon)
 
-# Build the final JSON structure
-campus_data = {
-    'nodes': list(nodes.values()),
-    'edges': edges
+    if nearest and dist <= POI_CONNECT:
+        edges.append({
+            "from": nid,
+            "to": nearest,
+            "distance": dist,
+            "time": dist / 1.4,
+            "accessible": True
+        })
+        edges.append({
+            "from": nearest,
+            "to": nid,
+            "distance": dist,
+            "time": dist / 1.4,
+            "accessible": True
+        })
+
+
+# =========================
+# Save Output
+# =========================
+output = {
+    "nodes": list(nodes.values()),
+    "edges": edges
 }
 
-# Save to JSON file
-with open('campus_nodes_edges.json', 'w') as f:
-    json.dump(campus_data, f, indent=2)
+with open("campus_nodes_edges.json", "w", encoding="utf-8") as f:
+    json.dump(output, f, indent=2)
 
-print("Data extraction and conversion complete.")
+print("✅ D.Y. Patil campus graph generated successfully")
+print(f"Nodes: {len(nodes)} | Edges: {len(edges)}")

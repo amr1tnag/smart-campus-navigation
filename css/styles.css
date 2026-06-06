@@ -1,19 +1,570 @@
-#controls {
-  position: absolute;
-  top: 10px;
-  left: 100px;
-  background: white;
-  padding: 10px;
-  z-index: 1000;
-  width: 240px;
-  font-size: 24px;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #eef1f4;
+  color: #1f2933;
 }
 
-#controls select,
-#controls button {
+/* ===== HEADER ===== */
+.main-header {
+  background: linear-gradient(90deg, #711616, #8d1f1f 56%, #243241);
+  color: white;
+  min-height: 68px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  box-shadow: 0 10px 24px rgba(21, 31, 41, 0.18);
+  z-index: 1100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.logo {
   display: block;
-  margin-bottom: 5px;
-  width: 240px;
-  height: 40px;
+  height: 50px;
+  width: auto;
+  max-width: 170px;
+  flex: 0 0 auto;
+  object-fit: contain;
+}
+
+.branding h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.branding p {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* ===== MAP ===== */
+#map-container {
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+/* ===== MAP MARKERS ===== */
+.map-marker {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border: 3px solid #ffffff;
+  border-radius: 50% 50% 50% 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+  transform: rotate(-45deg);
+}
+
+.map-marker span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(45deg);
+}
+
+.map-marker svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.map-marker-academic {
+  background: #8d1f1f;
+}
+
+.map-marker-building {
+  background: #475569;
+}
+
+.map-marker-gate {
+  background: #0f766e;
+}
+
+.map-marker-hospital {
+  background: #dc2626;
+}
+
+.map-marker-hostel {
+  background: #7c3aed;
+}
+
+.map-marker-lab {
+  background: #2563eb;
+}
+
+.map-marker-parking {
+  background: #0284c7;
+}
+
+.map-marker-sports {
+  background: #15803d;
+}
+
+.map-marker-worship {
+  background: #b45309;
+}
+
+.map-marker-default {
+  background: #334155;
+}
+
+.marker-legend {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  color: #243241;
+  padding: 10px;
+  backdrop-filter: blur(12px);
+}
+
+.marker-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.marker-legend-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.marker-legend-dot svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ===== CONTROL CARD ===== */
+#controls {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 320px;
+  z-index: 1000;
+
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  border-radius: 8px;
+  padding: 18px;
+
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.panel-heading {
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+}
+
+.panel-heading p {
+  margin: 0;
+  color: #111827;
   font-size: 18px;
+  font-weight: 700;
+}
+
+.panel-heading span {
+  display: block;
+  margin-top: 3px;
+  color: #687383;
+  font-size: 12px;
+}
+
+.panel-toggle {
+  display: none;
+  flex: 0 0 auto;
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #ffffff;
+  color: #243241;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.panel-toggle:focus-visible {
+  outline: 3px solid rgba(141, 31, 31, 0.18);
+  outline-offset: 2px;
+}
+
+/* ===== LABELS ===== */
+#controls label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* ===== DROPDOWNS ===== */
+#controls select {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 15px;
+
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+
+  padding: 0 12px;
+  font-size: 14px;
+  color: #111827;
+
+  background: #ffffff;
+  outline: none;
+}
+
+#controls select:focus {
+  border-color: #8d1f1f;
+  box-shadow: 0 0 0 3px rgba(141, 31, 31, 0.12);
+}
+
+/* ===== CHECKBOX ===== */
+.checkbox-label,
+.voice-toggle {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.checkbox-label input,
+.voice-toggle input {
+  margin-right: 8px;
+}
+
+/* ===== FIND ROUTE BUTTON ===== */
+#findRoute {
+  height: 46px;
+
+  background: #8d1f1f;
+  color: white;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(141, 31, 31, 0.22);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#findRoute:hover {
+  background: #711616;
+  transform: translateY(-1px);
+  box-shadow: 0 13px 22px rgba(141, 31, 31, 0.28);
+}
+
+.route-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.route-actions button {
+  width: 100%;
+}
+
+.secondary-action {
+  min-height: 42px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #243241;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.secondary-action:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+}
+
+#swapRoute {
+  width: 100%;
+  margin: -4px 0 15px;
+}
+
+/* ===== DISTANCE CARD ===== */
+.route-info {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+
+  box-shadow: none;
+}
+
+.route-info p {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 5px 0;
+  font-size: 13px;
+  color: #475569;
+}
+
+.route-info span:last-child {
+  color: #8d1f1f;
+  font-weight: 700;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* BASE STYLE (same as old Next Step button) */
+.nav-btn {
+  width: 100%;
+  height: 42px;
+
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #243241;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* Hover */
+.nav-btn:hover {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+/* CLICK */
+.nav-btn:active {
+  transform: scale(0.97);
+}
+
+/* OPTIONAL: Slight highlight for NEXT */
+.nav-btn.primary {
+  background: #243241;
+  border-color: #243241;
+  color: #ffffff;
+}
+
+/* Disabled */
+.nav-btn:disabled {
+  background: #ccc;
+  color: #666;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+/* ===== DIRECTIONS BOX ===== */
+#stepText {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+
+  font-size: 13px;
+  color: #1f2937;
+  line-height: 1.45;
+
+  margin-top: 0;
+
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+/* ===== VOICE TOGGLE ===== */
+.voice-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #444;
+}
+
+/* Switch container */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 22px;
+}
+
+/* Hide default checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider background */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: 50px;
+  transition: 0.3s;
+}
+
+/* Circle */
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+/* ON STATE */
+.switch input:checked + .slider {
+  background-color: #8d1f1f;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* Hover effect */
+.switch:hover .slider {
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 720px) {
+  .main-header {
+    min-height: 62px;
+    padding: 0 10px;
+  }
+
+  .branding h1 {
+    font-size: 14px;
+  }
+
+  .branding p {
+    font-size: 11px;
+  }
+
+  .logo {
+    height: 44px;
+    max-width: 118px;
+  }
+
+  #controls {
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    max-height: 68vh;
+    overflow: hidden;
+    padding: 14px;
+    transition: max-height 0.24s ease, box-shadow 0.24s ease;
+  }
+
+  .panel-heading {
+    border-bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .panel-heading p {
+    font-size: 16px;
+  }
+
+  .panel-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .panel-body {
+    max-height: calc(68vh - 64px);
+    margin-top: 14px;
+    overflow-y: auto;
+    padding-right: 2px;
+    transition: max-height 0.24s ease, opacity 0.18s ease, margin-top 0.24s ease;
+  }
+
+  #controls.is-collapsed {
+    max-height: 76px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+  }
+
+  #controls.is-collapsed .panel-body {
+    max-height: 0;
+    margin-top: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .marker-legend {
+    display: none;
+  }
 }

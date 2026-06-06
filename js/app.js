@@ -1,20 +1,100 @@
-// Fetch data and initialize the graph
+// ================= GLOBALS =================
+let steps = [];
+let currentStepIndex = 0;
+let currentPath = [];
+let currentLayer;
+let voiceEnabled = false;
+const defaultMapCenter = [19.0443, 73.0245];
+const defaultMapZoom = 17;
+
+const markerCategories = {
+  academic: {
+    label: "Academic",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 5l9 5.5-9 5.5-9-5.5Z"/><path d="M6.5 13.5v3.2c1.5 1.3 3.3 1.9 5.5 1.9s4-.6 5.5-1.9v-3.2"/></svg>'
+  },
+  building: {
+    label: "Building",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 20V5.8C6 4.8 6.8 4 7.8 4h8.4c1 0 1.8.8 1.8 1.8V20"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2M4 20h16"/></svg>'
+  },
+  gate: {
+    label: "Gate",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V8.5C5 6 7 4 9.5 4h5C17 4 19 6 19 8.5V20"/><path d="M8 20v-9h8v9M12 11v9"/></svg>'
+  },
+  hospital: {
+    label: "Hospital",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V6h14v14"/><path d="M9 12h6M12 9v6M4 20h16"/></svg>'
+  },
+  hostel: {
+    label: "Hostel",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18V7h16v11"/><path d="M4 13h16M7 13v-2.2C7 9.8 7.8 9 8.8 9H11v4M13 13V9h2.2c1 0 1.8.8 1.8 1.8V13M4 18h16"/></svg>'
+  },
+  lab: {
+    label: "Lab",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6M10 4v5.2l-4.5 7.4C4.6 18.1 5.7 20 7.5 20h9c1.8 0 2.9-1.9 2-3.4L14 9.2V4"/><path d="M8 15h8"/></svg>'
+  },
+  parking: {
+    label: "Parking",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 20V4h5.2C16.4 4 18 5.8 18 8.3s-1.6 4.3-4.8 4.3H8"/><path d="M8 12.6h5"/></svg>'
+  },
+  sports: {
+    label: "Sports",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M5.5 9.5c3.6 1.1 7.4 1.1 13 0M5.5 14.5c3.6-1.1 7.4-1.1 13 0M12 4c-2 2.2-3 4.9-3 8s1 5.8 3 8M12 4c2 2.2 3 4.9 3 8s-1 5.8-3 8"/></svg>'
+  },
+  worship: {
+    label: "Place",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 5 11h14l-7-7Z"/><path d="M7 11v9M17 11v9M10 20v-5h4v5M5 20h14"/></svg>'
+  },
+  default: {
+    label: "Location",
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.2 7-11a7 7 0 0 0-14 0c0 5.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>'
+  }
+};
+
+const controlsPanel = document.getElementById("controls");
+const panelToggle = document.getElementById("panelToggle");
+
+if (controlsPanel && panelToggle) {
+  const mobilePanelQuery = window.matchMedia("(max-width: 720px)");
+
+  function setPanelCollapsed(isCollapsed) {
+    controlsPanel.classList.toggle("is-collapsed", isCollapsed);
+    panelToggle.innerText = isCollapsed ? "Expand" : "Collapse";
+    panelToggle.setAttribute("aria-expanded", String(!isCollapsed));
+  }
+
+  setPanelCollapsed(mobilePanelQuery.matches);
+
+  panelToggle.addEventListener("click", () => {
+    setPanelCollapsed(!controlsPanel.classList.contains("is-collapsed"));
+
+    setTimeout(() => {
+      if (window.map) {
+        map.invalidateSize();
+      }
+    }, 260);
+  });
+
+  mobilePanelQuery.addEventListener("change", (event) => {
+    setPanelCollapsed(event.matches);
+  });
+}
+
+// ================= FETCH DATA =================
 fetch("campus_nodes_edges.json")
   .then((response) => response.json())
   .then((data) => {
-    // Add nodes to the graph
+
+    // Add nodes
     data.nodes.forEach((node) => {
       graph.addNode(node);
     });
 
-    // Add edges to the graph
+    // Add edges
     data.edges.forEach((edge) => {
       graph.addEdge(edge);
     });
 
-    // --------------------
-    // Group nodes by name
-    // --------------------
+    // ================= GROUP NODES =================
     const nodesByName = {};
 
     data.nodes.forEach((node) => {
@@ -27,155 +107,392 @@ fetch("campus_nodes_edges.json")
       }
     });
 
-    // -------------------------------
-    // Calculate average coordinates
-    // -------------------------------
+    // ================= LOCATION MARKERS =================
     const locationMarkers = [];
 
     for (const name in nodesByName) {
       const nodes = nodesByName[name];
+
       const avgLat =
-        nodes.reduce((sum, node) => sum + node.lat, 0) / nodes.length;
+        nodes.reduce((sum, n) => sum + n.lat, 0) / nodes.length;
       const avgLng =
-        nodes.reduce((sum, node) => sum + node.lng, 0) / nodes.length;
+        nodes.reduce((sum, n) => sum + n.lng, 0) / nodes.length;
 
       locationMarkers.push({
-        name: name,
+        name,
         lat: avgLat,
         lng: avgLng,
+        category: getLocationCategory(name, nodes)
       });
     }
 
-    // ----------------------------------------
-    // Add a single marker per named location
-    // ----------------------------------------
-    locationMarkers.forEach((location) => {
-      L.marker([location.lat, location.lng])
-        .bindPopup(location.name)
+    locationMarkers.forEach((loc) => {
+      L.marker([loc.lat, loc.lng], {
+        icon: createLocationIcon(loc.category),
+        title: loc.name
+      })
+        .bindPopup(`<strong>${loc.name}</strong><br>${markerCategories[loc.category].label}`)
         .addTo(map);
     });
 
-    // ----------------------------------------------------
-    // Populate the start and end select elements uniquely
-    // ----------------------------------------------------
+    addMarkerLegend();
+
+    // ================= DROPDOWN =================
     const startSelect = document.getElementById("start");
     const endSelect = document.getElementById("end");
+    const swapRouteButton = document.getElementById("swapRoute");
+    const clearRouteButton = document.getElementById("clearRoute");
 
-    locationMarkers.forEach((location) => {
+    // ✅ VOICE TOGGLE
+    document.getElementById("voiceToggle").addEventListener("change", (e) => {
+      voiceEnabled = e.target.checked;
+    });
+
+    locationMarkers.forEach((loc) => {
       const option = document.createElement("option");
-      option.value = location.name; // Use the location name as the value
-      option.text = location.name;
+      option.value = loc.name;
+      option.text = loc.name;
       startSelect.add(option.cloneNode(true));
       endSelect.add(option);
     });
 
-    // ---------------------------
-    // (Optional) Draw edges on map
-    // ---------------------------
-    data.edges.forEach((edge) => {
-      const fromNode = graph.nodes.get(edge.from);
-      const toNode = graph.nodes.get(edge.to);
-
-      const latlngs = [
-        [fromNode.lat, fromNode.lng],
-        [toNode.lat, toNode.lng],
-      ];
-      L.polyline(latlngs, { color: "gray" }).addTo(map);
+    swapRouteButton.addEventListener("click", () => {
+      const previousStart = startSelect.value;
+      startSelect.value = endSelect.value;
+      endSelect.value = previousStart;
     });
 
-    // -------------------------
-    // Event listener for routing
-    // -------------------------
+    clearRouteButton.addEventListener("click", clearRoute);
+
+    // ================= DRAW EDGES =================
+    data.edges.forEach((edge) => {
+      const from = graph.nodes.get(edge.from);
+      const to = graph.nodes.get(edge.to);
+
+      L.polyline(
+        [
+          [from.lat, from.lng],
+          [to.lat, to.lng],
+        ],
+        { color: "gray" }
+      ).addTo(map);
+    });
+
+    // ================= ROUTE BUTTON =================
     document.getElementById("findRoute").addEventListener("click", () => {
-      const startName = document.getElementById("start").value;
-      const endName = document.getElementById("end").value;
-      const algorithm = document.getElementById("algorithm").value;
-      const accessibility = document.getElementById("accessibility").checked;
 
-      const startNodeIds = nodesByName[startName].map((node) => node.id);
-      const endNodeIds = nodesByName[endName].map((node) => node.id);
-
-      let shortestPath = null;
-      let shortestDistance = Infinity;
-
+      const startName = startSelect.value;
+      const endName = endSelect.value;
       if (startName === endName) {
-        alert(
-          "Start and end locations cannot be the same. Please select different locations."
-        );
+        alert("Start and End cannot be same");
         return;
       }
-      // For each combination of start and end nodes
-      for (const startId of startNodeIds) {
-        for (const endId of endNodeIds) {
+
+      const startIds = nodesByName[startName].map(n => n.id);
+      const endIds = nodesByName[endName].map(n => n.id);
+
+      let bestPath = null;
+      let bestDistance = Infinity;
+
+      for (const s of startIds) {
+        for (const e of endIds) {
+
           let path = [];
-          switch (algorithm) {
-            case "bfs":
-              path = bfs(graph, startId, endId);
-              break;
-            case "dfs":
-              path = dfs(graph, startId, endId);
-              break;
-            case "dijkstra":
-              path = dijkstra(graph, startId, endId, "distance", accessibility);
-              break;
-          }
+
+          path = dijkstra(graph, s, e);
 
           if (path.length > 0) {
-            // Calculate total distance of the path
-            const totalDistance = calculatePathDistance(path);
+            const dist = calculateDistance(path);
 
-            if (totalDistance < shortestDistance) {
-              shortestDistance = totalDistance;
-              shortestPath = path;
+            if (dist < bestDistance) {
+              bestDistance = dist;
+              bestPath = path;
             }
           }
         }
       }
 
-      if (shortestPath) {
-        drawPath(shortestPath);
-      } else {
-        alert("No path found between the selected locations.");
+      if (!bestPath) {
+        alert("No route found");
+        return;
       }
+
+      // DRAW PATH
+      drawPath(bestPath);
+
+      // SAVE PATH
+      currentPath = bestPath;
+
+      // DISTANCE + TIME
+      const distance = bestDistance.toFixed(0);
+      const time = (bestDistance / 1.4 / 60).toFixed(1);
+
+      document.getElementById("distance").innerText = distance + " m";
+      document.getElementById("time").innerText = time + " min";
+
+      // GENERATE STEPS
+      steps = generateSteps(bestPath);
+      currentStepIndex = 0;
+
+      showStep();
+      speak(steps[currentStepIndex]); // 🔊 speak first step
+
+      // AUTO FOCUS
+      focusOnStep(currentPath, 0);
     });
   });
 
-function calculatePathDistance(path) {
-  let totalDistance = 0;
+// ================= MARKER ICONS =================
+function getLocationCategory(name, nodes = []) {
+  const text = name.toLowerCase();
+  const nodeTypes = nodes.map((node) => (node.type || "").toLowerCase());
+
+  if (text.includes("parking") || text.includes("park")) return "parking";
+  if (text.includes("gate") || text.includes("entrance")) return "gate";
+  if (text.includes("lab") || text.includes("laboratory")) return "lab";
+  if (text.includes("hospital") || text.includes("medical")) return "hospital";
+  if (text.includes("hostel") || text.includes("quarter")) return "hostel";
+  if (text.includes("stadium") || text.includes("ground") || text.includes("sports")) return "sports";
+  if (text.includes("mandir") || text.includes("temple")) return "worship";
+  if (
+    text.includes("college") ||
+    text.includes("school") ||
+    text.includes("university") ||
+    text.includes("centre") ||
+    text.includes("center") ||
+    text.includes("coe")
+  ) {
+    return "academic";
+  }
+  if (text.includes("building") || text.includes("bldng") || nodeTypes.includes("building")) {
+    return "building";
+  }
+
+  return "default";
+}
+
+function createLocationIcon(category) {
+  const marker = markerCategories[category] || markerCategories.default;
+
+  return L.divIcon({
+    className: "",
+    html: `<div class="map-marker map-marker-${category}"><span>${marker.icon}</span></div>`,
+    iconSize: [34, 42],
+    iconAnchor: [17, 40],
+    popupAnchor: [0, -36]
+  });
+}
+
+function addMarkerLegend() {
+  const legend = L.control({ position: "bottomright" });
+  const items = ["academic", "building", "gate", "hospital", "hostel", "lab", "parking", "sports"];
+
+  legend.onAdd = function () {
+    const div = L.DomUtil.create("div", "marker-legend");
+    div.innerHTML = items.map((category) => {
+      const marker = markerCategories[category];
+      return `
+        <div class="marker-legend-item">
+          <span class="marker-legend-dot map-marker-${category}">${marker.icon}</span>
+          <span>${marker.label}</span>
+        </div>
+      `;
+    }).join("");
+
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
+    return div;
+  };
+
+  legend.addTo(map);
+}
+
+// ================= DISTANCE =================
+function calculateDistance(path) {
+  let total = 0;
 
   for (let i = 0; i < path.length - 1; i++) {
-    const fromNodeId = path[i];
-    const toNodeId = path[i + 1];
+    const edges = graph.adjacencyList.get(path[i]);
+    const edge = edges.find(e => e.to === path[i + 1]);
 
-    const edges = graph.adjacencyList.get(fromNodeId);
-
-    const edge = edges.find((e) => e.to === toNodeId);
-    if (edge) {
-      totalDistance += edge.weight;
-    } else {
-      // Edge not found (this should not happen if the graph is consistent)
-      totalDistance += Infinity;
-    }
+    if (edge) total += edge.weight;
   }
 
-  return totalDistance;
+  return total;
 }
 
-let currentPathLayer;
+// ================= DRAW PATH =================
+function drawPath(path) {
+  if (currentLayer) map.removeLayer(currentLayer);
 
-function drawPath(nodeIds) {
-  // Remove existing path
-  if (currentPathLayer) {
-    map.removeLayer(currentPathLayer);
-  }
-
-  const latlngs = nodeIds.map((nodeId) => {
-    const node = graph.nodes.get(nodeId);
-    return [node.lat, node.lng];
+  const coords = path.map(id => {
+    const n = graph.nodes.get(id);
+    return [n.lat, n.lng];
   });
 
-  currentPathLayer = L.polyline(latlngs, { color: "red" }).addTo(map);
+  currentLayer = L.polyline(coords, {
+    color: "#800000",
+    weight: 5
+  }).addTo(map);
 
-  // Zoom the map to the path
-  map.fitBounds(currentPathLayer.getBounds());
+  map.fitBounds(currentLayer.getBounds());
 }
+
+function clearRoute() {
+  if (currentLayer) {
+    map.removeLayer(currentLayer);
+    currentLayer = null;
+  }
+
+  steps = [];
+  currentStepIndex = 0;
+  currentPath = [];
+
+  document.getElementById("distance").innerText = "-";
+  document.getElementById("time").innerText = "-";
+  document.getElementById("stepText").innerText = "Click Find Route";
+
+  if (window.speechSynthesis?.speaking) {
+    window.speechSynthesis.cancel();
+  }
+
+  map.setView(defaultMapCenter, defaultMapZoom);
+}
+
+// ================= STEP GENERATION =================
+function generateSteps(path) {
+  const steps = [];
+
+  function getDirection(a, b, c) {
+    if (!a || !b || !c) return "Continue straight";
+
+    const angle =
+      Math.atan2(c.lng - b.lng, c.lat - b.lat) -
+      Math.atan2(b.lng - a.lng, b.lat - a.lat);
+
+    let deg = (angle * 180) / Math.PI;
+    deg = ((deg + 540) % 360) - 180;
+
+    if (deg > -15 && deg < 15) return "Continue straight";
+
+    if (deg >= 15 && deg < 45) return "Turn slight right";
+    if (deg >= 45 && deg < 110) return "Turn right";
+    if (deg >= 110 && deg < 170) return "Make a sharp right";
+
+    if (deg <= -15 && deg > -45) return "Turn slight left";
+    if (deg <= -45 && deg > -110) return "Turn left";
+    if (deg <= -110 && deg > -170) return "Make a sharp left";
+
+    return "Make a U-turn";
+  }
+
+  for (let i = 0; i < path.length - 1; i++) {
+    const prev = graph.nodes.get(path[i - 1]);
+    const curr = graph.nodes.get(path[i]);
+    const next = graph.nodes.get(path[i + 1]);
+
+    const edges = graph.adjacencyList.get(path[i]);
+    const edge = edges.find(e => e.to === path[i + 1]);
+
+    const dist = edge ? edge.weight : 0;
+
+    let instruction;
+
+    if (i === 0) {
+      instruction = `Start and go straight for ${dist.toFixed(0)} meters`;
+    } else {
+      const dir = getDirection(prev, curr, next);
+      instruction = `${dir} and continue for ${dist.toFixed(0)} meters`;
+    }
+
+    if (next.name) {
+      instruction += ` towards ${next.name}`;
+    }
+
+    steps.push(instruction);
+  }
+
+  const lastNode = graph.nodes.get(path[path.length - 1]);
+  if (lastNode && lastNode.name) {
+    steps.push(`You have arrived at ${lastNode.name}`);
+  }
+
+  return steps;
+}
+
+// ================= SHOW STEP =================
+function showStep() {
+  const el = document.getElementById("stepText");
+
+  if (steps.length === 0) {
+    el.innerText = "No directions available";
+    return;
+  }
+
+  el.innerText = steps[currentStepIndex];
+}
+
+// ================= MAP FOCUS =================
+function focusOnStep(path, stepIndex) {
+  if (!path || path.length < 2) return;
+
+  const from = graph.nodes.get(path[stepIndex]);
+  const to = graph.nodes.get(path[stepIndex + 1]);
+
+  if (!from || !to) return;
+
+  const bounds = L.latLngBounds(
+    [from.lat, from.lng],
+    [to.lat, to.lng]
+  );
+
+  map.fitBounds(bounds, {
+    padding: [50, 50],
+    maxZoom: 19
+  });
+}
+
+// ================= 🔊 VOICE FUNCTION =================
+function speak(text) {
+  if (!voiceEnabled) return;
+
+  const synth = window.speechSynthesis;
+
+  // Stop previous speech properly
+  if (synth.speaking) {
+    synth.cancel();
+  }
+
+  const utter = new SpeechSynthesisUtterance();
+
+  // 🔥 Add slight pause + prefix to prevent clipping
+  utter.text = " " + text;
+
+  utter.rate = 0.95;
+  utter.pitch = 1;
+  utter.volume = 1;
+
+  // Slight delay ensures full sentence is spoken
+  setTimeout(() => {
+    synth.speak(utter);
+  }, 100);
+}
+
+// ================= BUTTONS =================
+document.getElementById("nextStep").addEventListener("click", () => {
+  if (currentStepIndex < steps.length - 1) {
+    currentStepIndex++;
+    showStep();
+    focusOnStep(currentPath, currentStepIndex);
+    speak(steps[currentStepIndex]);
+  }
+});
+
+document.getElementById("prevStep").addEventListener("click", () => {
+  if (currentStepIndex > 0) {
+    currentStepIndex--;
+    showStep();
+    focusOnStep(currentPath, currentStepIndex);
+    speak(steps[currentStepIndex]);
+  }
+});

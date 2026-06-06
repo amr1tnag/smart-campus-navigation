@@ -1,158 +1,74 @@
-function bfs(graph, startId, endId) {
-  const queue = [startId];
+function bfs(graph, start, end) {
+  const queue = [[start]];
   const visited = new Set();
-  const predecessor = {};
 
-  visited.add(startId);
+  while (queue.length) {
+    const path = queue.shift();
+    const node = path[path.length - 1];
 
-  while (queue.length > 0) {
-    const current = queue.shift();
-    if (current === endId) {
-      break;
+    if (node === end) return path;
+    if (visited.has(node)) continue;
+
+    visited.add(node);
+
+    for (const edge of graph.adjacencyList.get(node)) {
+      queue.push([...path, edge.to]);
     }
-
-    const neighbors = graph.adjacencyList.get(current) || [];
-    neighbors.forEach((neighbor) => {
-      if (!visited.has(neighbor.to)) {
-        visited.add(neighbor.to);
-        predecessor[neighbor.to] = current;
-        queue.push(neighbor.to);
-      }
-    });
   }
 
-  // Reconstruct path
-  const path = [];
-  let currentNode = endId;
-  while (currentNode !== undefined && currentNode !== startId) {
-    path.unshift(currentNode);
-    currentNode = predecessor[currentNode];
-  }
-  if (currentNode === startId) {
-    path.unshift(startId);
-  } else {
-    // No path found
-    return [];
-  }
-
-  return path;
+  return [];
 }
 
-function dfs(graph, startId, endId) {
-  const stack = [startId];
+function dfs(graph, start, end) {
+  const stack = [[start]];
   const visited = new Set();
-  const predecessor = {};
 
-  while (stack.length > 0) {
-    const current = stack.pop();
-    if (current === endId) {
-      break;
-    }
+  while (stack.length) {
+    const path = stack.pop();
+    const node = path[path.length - 1];
 
-    if (!visited.has(current)) {
-      visited.add(current);
+    if (node === end) return path;
+    if (visited.has(node)) continue;
 
-      const neighbors = graph.adjacencyList.get(current) || [];
-      neighbors.forEach((neighbor) => {
-        if (!visited.has(neighbor.to)) {
-          predecessor[neighbor.to] = current;
-          stack.push(neighbor.to);
-        }
-      });
+    visited.add(node);
+
+    for (const edge of graph.adjacencyList.get(node)) {
+      stack.push([...path, edge.to]);
     }
   }
 
-  // Reconstruct path
-  const path = [];
-  let currentNode = endId;
-  while (currentNode !== undefined && currentNode !== startId) {
-    path.unshift(currentNode);
-    currentNode = predecessor[currentNode];
-  }
-  if (currentNode === startId) {
-    path.unshift(startId);
-  } else {
-    // No path found
-    return [];
-  }
-
-  return path;
+  return [];
 }
 
-// Dijkstra's Algorithm
-class MinPriorityQueue {
-  constructor() {
-    this.queue = [];
-  }
+function dijkstra(graph, start, end) {
+  const dist = {};
+  const prev = {};
+  const pq = new Set(graph.nodes.keys());
 
-  enqueue(element, priority) {
-    this.queue.push({ element, priority });
-    this.queue.sort((a, b) => a.priority - b.priority);
-  }
+  graph.nodes.forEach((_, node) => dist[node] = Infinity);
+  dist[start] = 0;
 
-  dequeue() {
-    return this.queue.shift();
-  }
+  while (pq.size) {
+    let u = [...pq].reduce((a, b) => dist[a] < dist[b] ? a : b);
+    pq.delete(u);
 
-  isEmpty() {
-    return this.queue.length === 0;
-  }
-}
+    if (u === end) break;
 
-function dijkstra(
-  graph,
-  startId,
-  endId,
-  criteria = "distance",
-  accessibility = true
-) {
-  const distances = {};
-  const previous = {};
-  const pq = new MinPriorityQueue();
-
-  graph.nodes.forEach((node, nodeId) => {
-    distances[nodeId] = Infinity;
-    previous[nodeId] = null;
-  });
-
-  distances[startId] = 0;
-  pq.enqueue(startId, 0);
-
-  while (!pq.isEmpty()) {
-    const currentId = pq.dequeue().element;
-
-    if (currentId === endId) {
-      break;
+    for (const edge of graph.adjacencyList.get(u)) {
+      const alt = dist[u] + edge.weight;
+      if (alt < dist[edge.to]) {
+        dist[edge.to] = alt;
+        prev[edge.to] = u;
+      }
     }
-
-    const neighbors = graph.adjacencyList.get(currentId) || [];
-    neighbors.forEach((neighbor) => {
-      if (accessibility && !neighbor.accessible) {
-        return; // Skip non-accessible paths
-      }
-
-      const weight = neighbor.weight;
-      const alt = distances[currentId] + weight;
-      if (alt < distances[neighbor.to]) {
-        distances[neighbor.to] = alt;
-        previous[neighbor.to] = currentId;
-        pq.enqueue(neighbor.to, alt);
-      }
-    });
   }
 
-  // Reconstruct path
   const path = [];
-  let currentNode = endId;
-  while (currentNode !== undefined && currentNode !== startId) {
-    path.unshift(currentNode);
-    currentNode = previous[currentNode];
-  }
-  if (currentNode === startId) {
-    path.unshift(startId);
-  } else {
-    // No path found
-    return [];
+  let u = end;
+
+  while (u !== undefined) {
+    path.unshift(u);
+    u = prev[u];
   }
 
   return path;
