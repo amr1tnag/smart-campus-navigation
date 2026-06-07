@@ -6,6 +6,7 @@ body {
   flex-direction: column;
   height: 100vh;
   height: 100dvh;
+  height: var(--app-height, 100dvh);
   overflow: hidden;
   background: #eef1f4;
   color: #1f2933;
@@ -502,6 +503,7 @@ body {
   body {
     height: 100svh;
     height: 100dvh;
+    height: var(--app-height, 100dvh);
   }
 
   .main-header {
@@ -523,12 +525,13 @@ body {
   }
 
   #controls {
+    position: fixed;
     top: auto;
     right: 12px;
-    bottom: calc(14px + env(safe-area-inset-bottom));
+    bottom: calc(86px + env(safe-area-inset-bottom));
     left: 12px;
     width: auto;
-    max-height: min(62dvh, calc(100dvh - 92px));
+    max-height: min(52dvh, calc(var(--app-height, 100dvh) - 158px));
     overflow: hidden;
     padding: 14px;
     transition: max-height 0.24s ease, box-shadow 0.24s ease;
@@ -551,7 +554,7 @@ body {
   }
 
   .panel-body {
-    max-height: calc(min(62dvh, 100dvh - 92px) - 64px);
+    max-height: calc(min(52dvh, var(--app-height, 100dvh) - 158px) - 64px);
     margin-top: 14px;
     overflow-y: auto;
     padding-right: 2px;
@@ -560,7 +563,7 @@ body {
   }
 
   #controls.is-collapsed {
-    max-height: 74px;
+    max-height: 72px;
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
   }
 
@@ -617,7 +620,7 @@ body {
 
   #controls {
     right: 10px;
-    bottom: calc(12px + env(safe-area-inset-bottom));
+    bottom: calc(82px + env(safe-area-inset-bottom));
     left: 10px;
     padding: 12px;
   }

@@ -7,6 +7,15 @@ let voiceEnabled = false;
 const defaultMapCenter = [19.0443, 73.0245];
 const defaultMapZoom = 17;
 
+function syncAppHeight() {
+  const height = window.visualViewport?.height || window.innerHeight;
+  document.documentElement.style.setProperty("--app-height", `${height}px`);
+}
+
+syncAppHeight();
+window.addEventListener("resize", syncAppHeight);
+window.visualViewport?.addEventListener("resize", syncAppHeight);
+
 const markerCategories = {
   academic: {
     label: "Academic",
