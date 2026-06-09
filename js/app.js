@@ -85,6 +85,7 @@ if (controlsPanel && panelToggle) {
 
   mobilePanelQuery.addEventListener("change", (event) => {
     setPanelCollapsed(event.matches);
+    setTimeout(() => { if (window.map) map.invalidateSize(); }, 260);
   });
 }
 

@@ -524,17 +524,34 @@ body {
     max-width: 118px;
   }
 
+  /* Stacked layout: map above, controls below */
+  #map-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #map {
+    flex: 1;
+    min-height: 120px;
+  }
+
   #controls {
-    position: fixed;
+    position: relative;
     top: auto;
-    right: 12px;
-    bottom: calc(86px + env(safe-area-inset-bottom));
-    left: 12px;
+    right: auto;
+    bottom: auto;
+    left: auto;
     width: auto;
-    max-height: min(52dvh, calc(var(--app-height, 100dvh) - 158px));
+    max-height: 52dvh;
     overflow: hidden;
     padding: 14px;
-    transition: max-height 0.24s ease, box-shadow 0.24s ease;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.12);
+    transition: max-height 0.24s ease;
+    flex-shrink: 0;
   }
 
   .panel-heading {
@@ -554,7 +571,7 @@ body {
   }
 
   .panel-body {
-    max-height: calc(min(52dvh, var(--app-height, 100dvh) - 158px) - 64px);
+    max-height: calc(52dvh - 64px);
     margin-top: 14px;
     overflow-y: auto;
     padding-right: 2px;
@@ -563,8 +580,8 @@ body {
   }
 
   #controls.is-collapsed {
-    max-height: 72px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    max-height: 58px;
+    box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.10);
   }
 
   #controls.is-collapsed .panel-body {
@@ -619,9 +636,6 @@ body {
   }
 
   #controls {
-    right: 10px;
-    bottom: calc(82px + env(safe-area-inset-bottom));
-    left: 10px;
     padding: 12px;
   }
 
