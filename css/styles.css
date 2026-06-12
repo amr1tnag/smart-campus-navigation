@@ -244,6 +244,63 @@ body {
   padding-bottom: 14px;
 }
 
+.panel-heading-default {
+  min-width: 0;
+  flex: 1;
+}
+
+.panel-heading-mini {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mini-step-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #8d1f1f;
+  background: rgba(141,31,31,0.08);
+  border-radius: 20px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.mini-nav-btn {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  color: #243241;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.mini-nav-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+}
+
+.mini-nav-btn.primary {
+  background: #243241;
+  border-color: #243241;
+  color: #fff;
+}
+
+.mini-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .panel-heading p {
   margin: 0;
   color: #111827;

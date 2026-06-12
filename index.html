@@ -36,9 +36,14 @@
     <div class="drag-handle" id="dragHandle"></div>
     <div class="control-content">
       <div class="panel-heading">
-        <div>
+        <div class="panel-heading-default">
           <p>Route Planner</p>
           <span>Choose two campus locations</span>
+        </div>
+        <div class="panel-heading-mini" id="miniNav" hidden>
+          <button id="miniPrev" class="mini-nav-btn" aria-label="Previous step">&#8592;</button>
+          <span id="miniStepText" class="mini-step-text"></span>
+          <button id="miniNext" class="mini-nav-btn primary" aria-label="Next step">&#8594;</button>
         </div>
         <button
           type="button"

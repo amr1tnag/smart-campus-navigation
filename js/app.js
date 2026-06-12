@@ -345,6 +345,7 @@ function clearRoute() {
   document.getElementById("allStepsList").innerHTML = "";
 
   updateNavButtons();
+  updateMiniNav();
 
   if (window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
   map.setView(defaultMapCenter, defaultMapZoom);
@@ -408,12 +409,14 @@ function showStep() {
     el.innerText = "No directions available";
     counter.innerText = "";
     updateNavButtons();
+    updateMiniNav();
     return;
   }
 
   el.innerText = steps[currentStepIndex];
   counter.innerText = `Step ${currentStepIndex + 1} of ${steps.length}`;
   updateNavButtons();
+  updateMiniNav();
   renderAllSteps();
 }
 
@@ -422,6 +425,23 @@ function updateNavButtons() {
   const next = document.getElementById("nextStep");
   prev.disabled = steps.length === 0 || currentStepIndex === 0;
   next.disabled = steps.length === 0 || currentStepIndex === steps.length - 1;
+}
+
+function updateMiniNav() {
+  const miniNav = document.getElementById("miniNav");
+  const miniText = document.getElementById("miniStepText");
+  const miniPrev = document.getElementById("miniPrev");
+  const miniNext = document.getElementById("miniNext");
+
+  if (steps.length === 0) {
+    miniNav.hidden = true;
+    return;
+  }
+
+  miniNav.hidden = false;
+  miniText.textContent = `${currentStepIndex + 1}/${steps.length}`;
+  miniPrev.disabled = currentStepIndex === 0;
+  miniNext.disabled = currentStepIndex === steps.length - 1;
 }
 
 function renderAllSteps() {
@@ -523,20 +543,25 @@ document.getElementById("end").addEventListener("blur", () => {
 });
 
 // ================= PREV / NEXT =================
-document.getElementById("nextStep").addEventListener("click", () => {
+function goNext() {
   if (currentStepIndex < steps.length - 1) {
     currentStepIndex++;
     showStep();
     focusOnStep(currentPath, currentStepIndex);
     speak(steps[currentStepIndex]);
   }
-});
+}
 
-document.getElementById("prevStep").addEventListener("click", () => {
+function goPrev() {
   if (currentStepIndex > 0) {
     currentStepIndex--;
     showStep();
     focusOnStep(currentPath, currentStepIndex);
     speak(steps[currentStepIndex]);
   }
-});
+}
+
+document.getElementById("nextStep").addEventListener("click", goNext);
+document.getElementById("prevStep").addEventListener("click", goPrev);
+document.getElementById("miniNext").addEventListener("click", goNext);
+document.getElementById("miniPrev").addEventListener("click", goPrev);
