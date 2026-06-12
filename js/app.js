@@ -7,6 +7,7 @@ let startMarker = null;
 let endMarker = null;
 let positionMarker = null;
 let voiceEnabled = false;
+const routeCache = new Map(); // key: "startName|endName" → { path, distance }
 const defaultMapCenter = [19.0443, 73.0245];
 const defaultMapZoom = 17;
 
@@ -376,6 +377,16 @@ fetch("campus_nodes_edges.json")
       if (startName === endName) { showToast("Start and end cannot be the same location"); return; }
 
       const findBtn = document.getElementById("findRoute");
+      const cacheKey = `${startName}|${endName}`;
+      const reverseKey = `${endName}|${startName}`;
+
+      // Check cache (also accepts reversed route)
+      const cached = routeCache.get(cacheKey) || routeCache.get(reverseKey);
+      if (cached) {
+        finishRoute(cached.path, cached.distance, startName, endName);
+        return;
+      }
+
       findBtn.disabled = true;
       findBtn.textContent = "Finding…";
 
@@ -398,6 +409,16 @@ fetch("campus_nodes_edges.json")
         findBtn.textContent = "Find Route";
 
         if (!bestPath) { showToast("No route found between these locations"); return; }
+
+        // Store in cache, evict oldest if over limit
+        if (routeCache.size >= 20) routeCache.delete(routeCache.keys().next().value);
+        routeCache.set(cacheKey, { path: bestPath, distance: bestDistance });
+
+        finishRoute(bestPath, bestDistance, startName, endName);
+      }, 0);
+    }
+
+    function finishRoute(bestPath, bestDistance, startName, endName) {
 
         drawPath(bestPath, startName, endName);
         currentPath = bestPath;
@@ -426,7 +447,6 @@ fetch("campus_nodes_edges.json")
 
         saveRecentRoute(startName, endName);
         showToast(`Route found: ${distance} m, ~${time} min`, "success");
-      }, 0);
     }
 
     document.getElementById("findRoute").addEventListener("click", findRoute);

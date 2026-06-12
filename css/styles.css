@@ -1160,3 +1160,163 @@ body {
     font-size: 16px;
   }
 }
+
+/* ===== ATTRIBUTION FIX (visible above bottom sheet on mobile) ===== */
+@media (max-width: 720px) {
+  .leaflet-bottom.leaflet-right .leaflet-control-attribution {
+    margin-bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+    margin-right: 8px !important;
+    font-size: 10px !important;
+    max-width: 180px;
+  }
+}
+
+/* ===== DARK MODE ===== */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+
+  .main-header {
+    background: linear-gradient(90deg, #4a0e0e, #5c1414 56%, #0f172a);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  #controls {
+    background: rgba(15, 23, 42, 0.97);
+    border-color: rgba(51, 65, 85, 0.8);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .drag-handle { background: #334155; }
+
+  .panel-heading { border-bottom-color: #1e293b; }
+  .panel-heading p { color: #f1f5f9; }
+  .panel-heading span { color: #64748b; }
+
+  .panel-toggle {
+    background: #1e293b;
+    border-color: #334155;
+    color: #cbd5e1;
+  }
+
+  #controls label { color: #cbd5e1; }
+
+  .location-input-wrap input {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+  .location-input-wrap input::placeholder { color: #475569; }
+  .location-input-wrap input:focus {
+    border-color: #8d1f1f;
+    box-shadow: 0 0 0 3px rgba(141, 31, 31, 0.25);
+  }
+
+  .autocomplete-list {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  }
+  .autocomplete-item {
+    color: #e2e8f0;
+    border-bottom-color: #0f172a;
+  }
+  .autocomplete-item:hover,
+  .autocomplete-item.is-highlighted {
+    background: rgba(141, 31, 31, 0.18);
+    color: #fca5a5;
+  }
+  .autocomplete-empty { color: #475569; }
+
+  .recent-label { color: #475569; }
+  .recent-chip {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+  }
+  .recent-chip:hover {
+    background: rgba(141, 31, 31, 0.15);
+    border-color: #8d1f1f;
+    color: #fca5a5;
+  }
+
+  .secondary-action {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .secondary-action:hover {
+    background: #243241;
+    border-color: #475569;
+  }
+
+  .route-info {
+    background: #1e293b;
+    border-color: #334155;
+  }
+  .route-info p { color: #64748b; }
+  .route-info span:last-child { color: #fca5a5; }
+
+  #stepText {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+
+  .nav-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+    box-shadow: none;
+  }
+  .nav-btn:hover { background: #243241; }
+  .nav-btn.primary { background: #e2e8f0; border-color: #e2e8f0; color: #0f172a; }
+  .nav-btn:disabled { background: #1e293b; color: #334155; }
+
+  .all-steps-details { border-top-color: #1e293b; }
+  .all-steps-details summary { color: #94a3b8; }
+  .all-steps-details li { color: #64748b; border-bottom-color: #1e293b; }
+  .all-steps-details li.active-step { color: #fca5a5; }
+
+  .step-counter {
+    color: #fca5a5;
+    background: rgba(141, 31, 31, 0.2);
+  }
+
+  .tap-hint { color: #334155; }
+  .tap-hint-active { color: #fca5a5; }
+
+  .voice-toggle { color: #94a3b8; }
+  .slider { background: #334155; }
+
+  .mini-nav-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .mini-nav-btn.primary { background: #e2e8f0; color: #0f172a; border-color: #e2e8f0; }
+  .mini-step-text { color: #fca5a5; background: rgba(141, 31, 31, 0.2); }
+
+  .marker-legend {
+    background: rgba(15, 23, 42, 0.95);
+    border-color: rgba(51, 65, 85, 0.8);
+    color: #e2e8f0;
+  }
+  .marker-legend-item { color: #e2e8f0; }
+
+  .map-popup strong { color: #f1f5f9; }
+  .popup-category { color: #64748b; }
+  .popup-btn {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .popup-btn:hover { background: #8d1f1f; border-color: #8d1f1f; color: #fff; }
+
+  .share-btn { color: #e2e8f0; }
+
+  .toast-error { background: #7f1d1d; }
+  .toast-success { background: #14532d; }
+}
