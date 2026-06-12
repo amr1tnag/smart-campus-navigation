@@ -16,6 +16,23 @@ syncAppHeight();
 window.addEventListener("resize", syncAppHeight);
 window.visualViewport?.addEventListener("resize", syncAppHeight);
 
+// ================= TOAST =================
+function showToast(message, type = "error") {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => toast.classList.add("toast-visible"));
+
+  setTimeout(() => {
+    toast.classList.remove("toast-visible");
+    toast.addEventListener("transitionend", () => toast.remove(), { once: true });
+  }, 3200);
+}
+
+// ================= MARKER CATEGORIES =================
 const markerCategories = {
   academic: {
     label: "Academic",
@@ -59,6 +76,7 @@ const markerCategories = {
   }
 };
 
+// ================= PANEL TOGGLE =================
 const controlsPanel = document.getElementById("controls");
 const panelToggle = document.getElementById("panelToggle");
 
@@ -75,12 +93,7 @@ if (controlsPanel && panelToggle) {
 
   panelToggle.addEventListener("click", () => {
     setPanelCollapsed(!controlsPanel.classList.contains("is-collapsed"));
-
-    setTimeout(() => {
-      if (window.map) {
-        map.invalidateSize();
-      }
-    }, 260);
+    setTimeout(() => { if (window.map) map.invalidateSize(); }, 260);
   });
 
   mobilePanelQuery.addEventListener("change", (event) => {
@@ -93,15 +106,8 @@ fetch("campus_nodes_edges.json")
   .then((response) => response.json())
   .then((data) => {
 
-    // Add nodes
-    data.nodes.forEach((node) => {
-      graph.addNode(node);
-    });
-
-    // Add edges
-    data.edges.forEach((edge) => {
-      graph.addEdge(edge);
-    });
+    data.nodes.forEach((node) => graph.addNode(node));
+    data.edges.forEach((edge) => graph.addEdge(edge));
 
     // ================= GROUP NODES =================
     const nodesByName = {};
@@ -109,9 +115,7 @@ fetch("campus_nodes_edges.json")
     data.nodes.forEach((node) => {
       if (node.name && node.name.trim() !== "") {
         const name = node.name.trim();
-        if (!nodesByName[name]) {
-          nodesByName[name] = [];
-        }
+        if (!nodesByName[name]) nodesByName[name] = [];
         nodesByName[name].push(node);
       }
     });
@@ -121,18 +125,9 @@ fetch("campus_nodes_edges.json")
 
     for (const name in nodesByName) {
       const nodes = nodesByName[name];
-
-      const avgLat =
-        nodes.reduce((sum, n) => sum + n.lat, 0) / nodes.length;
-      const avgLng =
-        nodes.reduce((sum, n) => sum + n.lng, 0) / nodes.length;
-
-      locationMarkers.push({
-        name,
-        lat: avgLat,
-        lng: avgLng,
-        category: getLocationCategory(name, nodes)
-      });
+      const avgLat = nodes.reduce((sum, n) => sum + n.lat, 0) / nodes.length;
+      const avgLng = nodes.reduce((sum, n) => sum + n.lng, 0) / nodes.length;
+      locationMarkers.push({ name, lat: avgLat, lng: avgLng, category: getLocationCategory(name, nodes) });
     }
 
     locationMarkers.forEach((loc) => {
@@ -146,109 +141,110 @@ fetch("campus_nodes_edges.json")
 
     addMarkerLegend();
 
-    // ================= DROPDOWN =================
-    const startSelect = document.getElementById("start");
-    const endSelect = document.getElementById("end");
-    const swapRouteButton = document.getElementById("swapRoute");
-    const clearRouteButton = document.getElementById("clearRoute");
+    // ================= POPULATE DATALISTS =================
+    const startInput = document.getElementById("start");
+    const endInput = document.getElementById("end");
+    const startList = document.getElementById("start-list");
+    const endList = document.getElementById("end-list");
 
-    // ✅ VOICE TOGGLE
+    const sortedNames = locationMarkers.map(l => l.name).sort();
+
+    sortedNames.forEach((name) => {
+      const opt1 = document.createElement("option");
+      opt1.value = name;
+      startList.appendChild(opt1);
+
+      const opt2 = document.createElement("option");
+      opt2.value = name;
+      endList.appendChild(opt2);
+    });
+
     document.getElementById("voiceToggle").addEventListener("change", (e) => {
       voiceEnabled = e.target.checked;
     });
 
-    locationMarkers.forEach((loc) => {
-      const option = document.createElement("option");
-      option.value = loc.name;
-      option.text = loc.name;
-      startSelect.add(option.cloneNode(true));
-      endSelect.add(option);
+    document.getElementById("swapRoute").addEventListener("click", () => {
+      const tmp = startInput.value;
+      startInput.value = endInput.value;
+      endInput.value = tmp;
     });
 
-    swapRouteButton.addEventListener("click", () => {
-      const previousStart = startSelect.value;
-      startSelect.value = endSelect.value;
-      endSelect.value = previousStart;
-    });
-
-    clearRouteButton.addEventListener("click", clearRoute);
+    document.getElementById("clearRoute").addEventListener("click", clearRoute);
 
     // ================= DRAW EDGES =================
     data.edges.forEach((edge) => {
       const from = graph.nodes.get(edge.from);
       const to = graph.nodes.get(edge.to);
-
-      L.polyline(
-        [
-          [from.lat, from.lng],
-          [to.lat, to.lng],
-        ],
-        { color: "gray" }
-      ).addTo(map);
+      L.polyline([[from.lat, from.lng], [to.lat, to.lng]], { color: "gray", weight: 1, opacity: 0.5 }).addTo(map);
     });
 
     // ================= ROUTE BUTTON =================
     document.getElementById("findRoute").addEventListener("click", () => {
+      const startName = startInput.value.trim();
+      const endName = endInput.value.trim();
 
-      const startName = startSelect.value;
-      const endName = endSelect.value;
-      if (startName === endName) {
-        alert("Start and End cannot be same");
-        return;
-      }
+      if (!startName) { showToast("Please enter a start location"); return; }
+      if (!endName) { showToast("Please enter an end location"); return; }
+      if (!nodesByName[startName]) { showToast(`"${startName}" not found — pick from the list`); return; }
+      if (!nodesByName[endName]) { showToast(`"${endName}" not found — pick from the list`); return; }
+      if (startName === endName) { showToast("Start and end cannot be the same location"); return; }
 
-      const startIds = nodesByName[startName].map(n => n.id);
-      const endIds = nodesByName[endName].map(n => n.id);
+      const findBtn = document.getElementById("findRoute");
+      findBtn.disabled = true;
+      findBtn.textContent = "Finding…";
 
-      let bestPath = null;
-      let bestDistance = Infinity;
+      setTimeout(() => {
+        const startIds = nodesByName[startName].map(n => n.id);
+        const endIds = nodesByName[endName].map(n => n.id);
 
-      for (const s of startIds) {
-        for (const e of endIds) {
+        let bestPath = null;
+        let bestDistance = Infinity;
 
-          let path = [];
-
-          path = dijkstra(graph, s, e);
-
-          if (path.length > 0) {
-            const dist = calculateDistance(path);
-
-            if (dist < bestDistance) {
-              bestDistance = dist;
-              bestPath = path;
+        for (const s of startIds) {
+          for (const e of endIds) {
+            const path = dijkstra(graph, s, e);
+            if (path.length > 0) {
+              const dist = calculateDistance(path);
+              if (dist < bestDistance) {
+                bestDistance = dist;
+                bestPath = path;
+              }
             }
           }
         }
-      }
 
-      if (!bestPath) {
-        alert("No route found");
-        return;
-      }
+        findBtn.disabled = false;
+        findBtn.textContent = "Find Route";
 
-      // DRAW PATH
-      drawPath(bestPath);
+        if (!bestPath) {
+          showToast("No route found between these locations");
+          return;
+        }
 
-      // SAVE PATH
-      currentPath = bestPath;
+        drawPath(bestPath);
+        currentPath = bestPath;
 
-      // DISTANCE + TIME
-      const distance = bestDistance.toFixed(0);
-      const time = (bestDistance / 1.4 / 60).toFixed(1);
+        const distance = bestDistance.toFixed(0);
+        const time = (bestDistance / 1.4 / 60).toFixed(1);
 
-      document.getElementById("distance").innerText = distance + " m";
-      document.getElementById("time").innerText = time + " min";
+        document.getElementById("distance").innerText = distance + " m";
+        document.getElementById("time").innerText = time + " min";
+        document.getElementById("routeStats").hidden = false;
 
-      // GENERATE STEPS
-      steps = generateSteps(bestPath);
-      currentStepIndex = 0;
+        steps = generateSteps(bestPath);
+        currentStepIndex = 0;
 
-      showStep();
-      speak(steps[currentStepIndex]); // 🔊 speak first step
+        document.getElementById("directionsCard").hidden = false;
+        showStep();
+        speak(steps[currentStepIndex]);
+        focusOnStep(currentPath, 0);
 
-      // AUTO FOCUS
-      focusOnStep(currentPath, 0);
+        showToast(`Route found: ${distance} m, ~${time} min`, "success");
+      }, 0);
     });
+  })
+  .catch(() => {
+    showToast("Failed to load campus data. Please refresh.");
   });
 
 // ================= MARKER ICONS =================
@@ -264,25 +260,16 @@ function getLocationCategory(name, nodes = []) {
   if (text.includes("stadium") || text.includes("ground") || text.includes("sports")) return "sports";
   if (text.includes("mandir") || text.includes("temple")) return "worship";
   if (
-    text.includes("college") ||
-    text.includes("school") ||
-    text.includes("university") ||
-    text.includes("centre") ||
-    text.includes("center") ||
-    text.includes("coe")
-  ) {
-    return "academic";
-  }
-  if (text.includes("building") || text.includes("bldng") || nodeTypes.includes("building")) {
-    return "building";
-  }
-
+    text.includes("college") || text.includes("school") ||
+    text.includes("university") || text.includes("centre") ||
+    text.includes("center") || text.includes("coe")
+  ) return "academic";
+  if (text.includes("building") || text.includes("bldng") || nodeTypes.includes("building")) return "building";
   return "default";
 }
 
 function createLocationIcon(category) {
   const marker = markerCategories[category] || markerCategories.default;
-
   return L.divIcon({
     className: "",
     html: `<div class="map-marker map-marker-${category}"><span>${marker.icon}</span></div>`,
@@ -307,7 +294,6 @@ function addMarkerLegend() {
         </div>
       `;
     }).join("");
-
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.disableScrollPropagation(div);
     return div;
@@ -319,14 +305,11 @@ function addMarkerLegend() {
 // ================= DISTANCE =================
 function calculateDistance(path) {
   let total = 0;
-
   for (let i = 0; i < path.length - 1; i++) {
     const edges = graph.adjacencyList.get(path[i]);
     const edge = edges.find(e => e.to === path[i + 1]);
-
     if (edge) total += edge.weight;
   }
-
   return total;
 }
 
@@ -339,11 +322,7 @@ function drawPath(path) {
     return [n.lat, n.lng];
   });
 
-  currentLayer = L.polyline(coords, {
-    color: "#800000",
-    weight: 5
-  }).addTo(map);
-
+  currentLayer = L.polyline(coords, { color: "#800000", weight: 5 }).addTo(map);
   map.fitBounds(currentLayer.getBounds());
 }
 
@@ -357,41 +336,39 @@ function clearRoute() {
   currentStepIndex = 0;
   currentPath = [];
 
+  document.getElementById("routeStats").hidden = true;
+  document.getElementById("directionsCard").hidden = true;
   document.getElementById("distance").innerText = "-";
   document.getElementById("time").innerText = "-";
   document.getElementById("stepText").innerText = "Click Find Route";
+  document.getElementById("stepCounter").innerText = "";
+  document.getElementById("allStepsList").innerHTML = "";
 
-  if (window.speechSynthesis?.speaking) {
-    window.speechSynthesis.cancel();
-  }
+  updateNavButtons();
 
+  if (window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
   map.setView(defaultMapCenter, defaultMapZoom);
 }
 
 // ================= STEP GENERATION =================
 function generateSteps(path) {
-  const steps = [];
+  const result = [];
 
   function getDirection(a, b, c) {
     if (!a || !b || !c) return "Continue straight";
-
     const angle =
       Math.atan2(c.lng - b.lng, c.lat - b.lat) -
       Math.atan2(b.lng - a.lng, b.lat - a.lat);
-
     let deg = (angle * 180) / Math.PI;
     deg = ((deg + 540) % 360) - 180;
 
     if (deg > -15 && deg < 15) return "Continue straight";
-
     if (deg >= 15 && deg < 45) return "Turn slight right";
     if (deg >= 45 && deg < 110) return "Turn right";
     if (deg >= 110 && deg < 170) return "Make a sharp right";
-
     if (deg <= -15 && deg > -45) return "Turn slight left";
     if (deg <= -45 && deg > -110) return "Turn left";
     if (deg <= -110 && deg > -170) return "Make a sharp left";
-
     return "Make a U-turn";
   }
 
@@ -402,92 +379,86 @@ function generateSteps(path) {
 
     const edges = graph.adjacencyList.get(path[i]);
     const edge = edges.find(e => e.to === path[i + 1]);
-
     const dist = edge ? edge.weight : 0;
 
     let instruction;
-
     if (i === 0) {
-      instruction = `Start and go straight for ${dist.toFixed(0)} meters`;
+      instruction = `Start and head straight for ${dist.toFixed(0)} m`;
     } else {
       const dir = getDirection(prev, curr, next);
-      instruction = `${dir} and continue for ${dist.toFixed(0)} meters`;
+      instruction = `${dir} for ${dist.toFixed(0)} m`;
     }
 
-    if (next.name) {
-      instruction += ` towards ${next.name}`;
-    }
-
-    steps.push(instruction);
+    if (next.name) instruction += ` towards ${next.name}`;
+    result.push(instruction);
   }
 
   const lastNode = graph.nodes.get(path[path.length - 1]);
-  if (lastNode && lastNode.name) {
-    steps.push(`You have arrived at ${lastNode.name}`);
-  }
+  if (lastNode?.name) result.push(`You have arrived at ${lastNode.name}`);
 
-  return steps;
+  return result;
 }
 
 // ================= SHOW STEP =================
 function showStep() {
   const el = document.getElementById("stepText");
+  const counter = document.getElementById("stepCounter");
 
   if (steps.length === 0) {
     el.innerText = "No directions available";
+    counter.innerText = "";
+    updateNavButtons();
     return;
   }
 
   el.innerText = steps[currentStepIndex];
+  counter.innerText = `Step ${currentStepIndex + 1} of ${steps.length}`;
+  updateNavButtons();
+  renderAllSteps();
+}
+
+function updateNavButtons() {
+  const prev = document.getElementById("prevStep");
+  const next = document.getElementById("nextStep");
+  prev.disabled = steps.length === 0 || currentStepIndex === 0;
+  next.disabled = steps.length === 0 || currentStepIndex === steps.length - 1;
+}
+
+function renderAllSteps() {
+  const list = document.getElementById("allStepsList");
+  list.innerHTML = steps.map((s, i) =>
+    `<li class="${i === currentStepIndex ? "active-step" : ""}">${s}</li>`
+  ).join("");
+
+  const active = list.querySelector(".active-step");
+  if (active) active.scrollIntoView({ block: "nearest" });
 }
 
 // ================= MAP FOCUS =================
 function focusOnStep(path, stepIndex) {
   if (!path || path.length < 2) return;
-
   const from = graph.nodes.get(path[stepIndex]);
-  const to = graph.nodes.get(path[stepIndex + 1]);
-
+  const to = graph.nodes.get(path[Math.min(stepIndex + 1, path.length - 1)]);
   if (!from || !to) return;
-
-  const bounds = L.latLngBounds(
-    [from.lat, from.lng],
-    [to.lat, to.lng]
-  );
-
-  map.fitBounds(bounds, {
+  map.fitBounds(L.latLngBounds([from.lat, from.lng], [to.lat, to.lng]), {
     padding: [50, 50],
     maxZoom: 19
   });
 }
 
-// ================= 🔊 VOICE FUNCTION =================
+// ================= VOICE =================
 function speak(text) {
   if (!voiceEnabled) return;
-
   const synth = window.speechSynthesis;
-
-  // Stop previous speech properly
-  if (synth.speaking) {
-    synth.cancel();
-  }
-
-  const utter = new SpeechSynthesisUtterance();
-
-  // 🔥 Add slight pause + prefix to prevent clipping
-  utter.text = " " + text;
-
+  if (synth.speaking) synth.cancel();
+  const utter = new SpeechSynthesisUtterance(" " + text);
   utter.rate = 0.95;
   utter.pitch = 1;
   utter.volume = 1;
-
-  // Slight delay ensures full sentence is spoken
-  setTimeout(() => {
-    synth.speak(utter);
-  }, 100);
+  setTimeout(() => synth.speak(utter), 100);
 }
 
-// ================= BUTTONS =================
+// ================= PREV / NEXT =================
 document.getElementById("nextStep").addEventListener("click", () => {
   if (currentStepIndex < steps.length - 1) {
     currentStepIndex++;

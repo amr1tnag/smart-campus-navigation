@@ -11,9 +11,11 @@
 
 <body>
 
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
 <header class="main-header">
   <div class="header-left">
-    <img src="University Logo.png" class="logo" />
+    <img src="University Logo.png" class="logo" alt="D.Y. Patil University Logo" />
     <div class="branding">
       <h1>D.Y. PATIL UNIVERSITY</h1>
       <p>Smart Campus Navigation</p>
@@ -43,41 +45,69 @@
       </div>
 
       <div id="panelBody" class="panel-body">
-        <label>Start Location</label>
-        <select id="start"></select>
+        <label for="start">Start Location</label>
+        <div class="location-input-wrap">
+          <input
+            type="text"
+            id="start"
+            list="start-list"
+            placeholder="Search start location…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <datalist id="start-list"></datalist>
+        </div>
 
-        <label>End Location</label>
-        <select id="end"></select>
+        <label for="end">End Location</label>
+        <div class="location-input-wrap">
+          <input
+            type="text"
+            id="end"
+            list="end-list"
+            placeholder="Search end location…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <datalist id="end-list"></datalist>
+        </div>
 
-        <button id="swapRoute" class="secondary-action" type="button">Swap Start and End</button>
+        <button id="swapRoute" class="secondary-action" type="button">⇅ Swap</button>
 
         <div class="route-actions">
           <button id="findRoute" type="button">Find Route</button>
-          <button id="clearRoute" class="secondary-action" type="button">Clear Route</button>
+          <button id="clearRoute" class="secondary-action" type="button">Clear</button>
         </div>
 
         <!-- RESULT -->
-        <div class="route-info">
+        <div class="route-info" id="routeStats" hidden>
           <p><span class="label">Distance</span><span id="distance">-</span></p>
-          <p><span class="label">Time</span><span id="time">-</span></p>
+          <p><span class="label">Est. Time</span><span id="time">-</span></p>
         </div>
 
         <!-- DIRECTIONS -->
-        <div class="route-info">
+        <div class="route-info directions-card" id="directionsCard" hidden>
+          <div class="step-header">
+            <span id="stepCounter" class="step-counter"></span>
+            <div class="voice-toggle">
+              <span>Voice</span>
+              <label class="switch">
+                <input type="checkbox" id="voiceToggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
           <p id="stepText">Click Find Route</p>
 
           <div class="nav-buttons">
-            <button id="prevStep" class="nav-btn">Prev Step</button>
-            <button id="nextStep" class="nav-btn primary">Next Step</button>
+            <button id="prevStep" class="nav-btn" disabled>← Prev</button>
+            <button id="nextStep" class="nav-btn primary" disabled>Next →</button>
           </div>
-          <div class="voice-toggle">
-            <span>Voice Navigation</span>
 
-            <label class="switch">
-              <input type="checkbox" id="voiceToggle">
-              <span class="slider"></span>
-            </label>
-          </div>
+          <details class="all-steps-details" id="allStepsDetails">
+            <summary>All Directions</summary>
+            <ol id="allStepsList"></ol>
+          </details>
         </div>
 
       </div>
