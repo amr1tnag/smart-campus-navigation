@@ -5,6 +5,7 @@ let currentPath = [];
 let currentLayer;
 let startMarker = null;
 let endMarker = null;
+let positionMarker = null;
 let voiceEnabled = false;
 const defaultMapCenter = [19.0443, 73.0245];
 const defaultMapZoom = 17;
@@ -150,15 +151,79 @@ fetch("campus_nodes_edges.json")
     }
 
     locationMarkers.forEach((loc) => {
+      const safeName = loc.name.replace(/"/g, "&quot;");
       L.marker([loc.lat, loc.lng], {
         icon: createLocationIcon(loc.category),
         title: loc.name
       })
-        .bindPopup(`<strong>${loc.name}</strong><br>${markerCategories[loc.category].label}`)
+        .bindPopup(`
+          <div class="map-popup">
+            <strong>${loc.name}</strong>
+            <p class="popup-category">${markerCategories[loc.category].label}</p>
+            <div class="popup-actions">
+              <button class="popup-btn popup-set-start" data-name="${safeName}">Set as Start</button>
+              <button class="popup-btn popup-set-end" data-name="${safeName}">Set as End</button>
+            </div>
+          </div>
+        `, { minWidth: 160 })
         .addTo(map);
     });
 
+    // Popup "Set as Start/End" button handlers
+    map.on("popupopen", (e) => {
+      const el = e.popup.getElement();
+      el.querySelector(".popup-set-start")?.addEventListener("click", () => {
+        startInput.value = el.querySelector(".popup-set-start").dataset.name;
+        map.closePopup();
+      });
+      el.querySelector(".popup-set-end")?.addEventListener("click", () => {
+        endInput.value = el.querySelector(".popup-set-end").dataset.name;
+        map.closePopup();
+      });
+    });
+
     addMarkerLegend();
+
+    // ================= RECENT ROUTES =================
+    function getRecentRoutes() {
+      try { return JSON.parse(localStorage.getItem("recentRoutes")) || []; }
+      catch { return []; }
+    }
+
+    function saveRecentRoute(from, to) {
+      const existing = getRecentRoutes().filter(r => !(r.from === from && r.to === to));
+      existing.unshift({ from, to });
+      localStorage.setItem("recentRoutes", JSON.stringify(existing.slice(0, 5)));
+      renderRecentRoutes();
+    }
+
+    function renderRecentRoutes() {
+      const routes = getRecentRoutes();
+      const container = document.getElementById("recentRoutes");
+      const chips = document.getElementById("recentChips");
+      if (routes.length === 0) { container.hidden = true; return; }
+      container.hidden = false;
+      chips.innerHTML = routes.map((r, i) =>
+        `<button class="recent-chip" data-index="${i}">
+          <span class="recent-from">${r.from}</span>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          <span class="recent-to">${r.to}</span>
+        </button>`
+      ).join("");
+    }
+
+    document.getElementById("recentChips").addEventListener("click", (e) => {
+      const chip = e.target.closest(".recent-chip");
+      if (!chip) return;
+      const routes = getRecentRoutes();
+      const route = routes[+chip.dataset.index];
+      if (!route) return;
+      startInput.value = route.from;
+      endInput.value = route.to;
+      findRoute();
+    });
+
+    renderRecentRoutes();
 
     // ================= AUTOCOMPLETE =================
     const startInput = document.getElementById("start");
@@ -359,6 +424,7 @@ fetch("campus_nodes_edges.json")
         url.searchParams.set("to", endName);
         window.history.replaceState({}, "", url);
 
+        saveRecentRoute(startName, endName);
         showToast(`Route found: ${distance} m, ~${time} min`, "success");
       }, 0);
     }
@@ -502,6 +568,7 @@ function clearRoute() {
   if (currentLayer) { map.removeLayer(currentLayer); currentLayer = null; }
   if (startMarker) { map.removeLayer(startMarker); startMarker = null; }
   if (endMarker) { map.removeLayer(endMarker); endMarker = null; }
+  if (positionMarker) { map.removeLayer(positionMarker); positionMarker = null; }
 
   steps = [];
   currentStepIndex = 0;
@@ -598,6 +665,25 @@ function showStep() {
   updateNavButtons();
   updateMiniNav();
   renderAllSteps();
+  updatePositionMarker(currentPath, currentStepIndex);
+}
+
+function updatePositionMarker(path, stepIndex) {
+  if (!path || path.length === 0) return;
+  const node = graph.nodes.get(path[stepIndex]);
+  if (!node) return;
+
+  if (positionMarker) map.removeLayer(positionMarker);
+  positionMarker = L.marker([node.lat, node.lng], {
+    icon: L.divIcon({
+      className: "",
+      html: `<div class="position-dot"><div class="position-dot-ring"></div></div>`,
+      iconSize: [20, 20],
+      iconAnchor: [10, 10]
+    }),
+    zIndexOffset: 1000,
+    interactive: false
+  }).addTo(map);
 }
 
 function updateNavButtons() {
