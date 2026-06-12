@@ -384,10 +384,10 @@ function generateSteps(path) {
 
     let instruction;
     if (i === 0) {
-      instruction = `Start and head straight for ${dist.toFixed(0)} m`;
+      instruction = `Start and head straight for ${dist.toFixed(0)} meters`;
     } else {
       const dir = getDirection(prev, curr, next);
-      instruction = `${dir} for ${dist.toFixed(0)} m`;
+      instruction = `${dir} for ${dist.toFixed(0)} meters`;
     }
 
     if (next.name) instruction += ` towards ${next.name}`;
