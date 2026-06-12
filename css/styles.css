@@ -828,10 +828,15 @@ body {
     border-radius: 20px 20px 0 0;
     max-height: 56dvh;
     overflow: hidden;
-    padding: 10px 16px 16px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    /* top padding + side padding; bottom handled separately */
+    padding: 10px 16px 0;
     transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1), box-shadow 0.24s ease;
     box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.18);
+  }
+
+  /* Inner wrapper absorbs the safe-area bottom so the heading stays above it */
+  .control-content {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
   }
 
   .panel-heading {
@@ -851,7 +856,7 @@ body {
   }
 
   .panel-body {
-    max-height: calc(56dvh - 80px);
+    max-height: calc(56dvh - 80px - env(safe-area-inset-bottom));
     margin-top: 12px;
     overflow-y: auto;
     padding-right: 2px;
@@ -860,8 +865,9 @@ body {
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Collapsed: tall enough for drag handle + heading + safe area */
   #controls.is-collapsed {
-    max-height: 62px;
+    max-height: calc(64px + env(safe-area-inset-bottom));
     box-shadow: 0 -2px 16px rgba(15, 23, 42, 0.14);
   }
 
@@ -878,7 +884,7 @@ body {
   }
 
   .leaflet-control-zoom {
-    margin-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+    margin-bottom: calc(80px + env(safe-area-inset-bottom)) !important;
     margin-right: 12px !important;
     margin-top: auto !important;
     position: absolute !important;
@@ -890,7 +896,7 @@ body {
 
   #toast-container {
     top: auto;
-    bottom: calc(60dvh + 12px);
+    bottom: calc(60dvh + 16px + env(safe-area-inset-bottom));
     right: 12px;
     left: 12px;
   }
