@@ -286,6 +286,73 @@ body {
   display: block;
 }
 
+/* ===== DRAG HANDLE ===== */
+.drag-handle {
+  display: none;
+  width: 36px;
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 4px;
+  margin: 0 auto 12px;
+}
+
+/* ===== TAP HINT ===== */
+.tap-hint {
+  margin: -8px 0 12px;
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  transition: color 0.2s;
+}
+
+.tap-hint-active {
+  color: #8d1f1f;
+  font-weight: 600;
+}
+
+/* ===== GPS BUTTON ===== */
+.gps-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.gps-btn:hover {
+  color: #8d1f1f;
+  background: rgba(141, 31, 31, 0.08);
+}
+
+.gps-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.gps-btn.gps-loading {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+}
+
+@keyframes spin {
+  to { transform: translateY(-50%) rotate(360deg); }
+}
+
+.location-input-wrap input {
+  padding-right: 40px;
+}
+
 /* ===== LOCATION INPUTS (searchable datalist) ===== */
 .location-input-wrap {
   position: relative;
@@ -622,7 +689,7 @@ body {
   }
 
   .main-header {
-    min-height: 62px;
+    min-height: 52px;
     padding: 0 10px;
   }
 
@@ -635,21 +702,29 @@ body {
   }
 
   .logo {
-    height: 44px;
-    max-width: 118px;
+    height: 40px;
+    max-width: 110px;
+  }
+
+  .drag-handle {
+    display: block;
   }
 
   #controls {
     position: fixed;
     top: auto;
-    right: 12px;
-    bottom: calc(86px + env(safe-area-inset-bottom));
-    left: 12px;
-    width: auto;
-    max-height: min(52dvh, calc(var(--app-height, 100dvh) - 158px));
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 20px 20px 0 0;
+    max-height: 56dvh;
     overflow: hidden;
-    padding: 14px;
-    transition: max-height 0.24s ease, box-shadow 0.24s ease;
+    padding: 10px 16px 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1), box-shadow 0.24s ease;
+    box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.18);
   }
 
   .panel-heading {
@@ -669,17 +744,18 @@ body {
   }
 
   .panel-body {
-    max-height: calc(min(52dvh, var(--app-height, 100dvh) - 158px) - 64px);
-    margin-top: 14px;
+    max-height: calc(56dvh - 80px);
+    margin-top: 12px;
     overflow-y: auto;
     padding-right: 2px;
     overscroll-behavior: contain;
-    transition: max-height 0.24s ease, opacity 0.18s ease, margin-top 0.24s ease;
+    transition: max-height 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.18s ease, margin-top 0.24s ease;
+    -webkit-overflow-scrolling: touch;
   }
 
   #controls.is-collapsed {
-    max-height: 72px;
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    max-height: 62px;
+    box-shadow: 0 -2px 16px rgba(15, 23, 42, 0.14);
   }
 
   #controls.is-collapsed .panel-body {
@@ -695,14 +771,32 @@ body {
   }
 
   .leaflet-control-zoom {
-    margin-top: 12px !important;
-    margin-left: 12px !important;
+    margin-bottom: calc(70px + env(safe-area-inset-bottom)) !important;
+    margin-right: 12px !important;
+    margin-top: auto !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    top: auto !important;
+    left: auto !important;
+  }
+
+  #toast-container {
+    top: auto;
+    bottom: calc(60dvh + 12px);
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast {
+    max-width: 100%;
+    text-align: center;
   }
 }
 
 @media (max-width: 430px) {
   .main-header {
-    min-height: 58px;
+    min-height: 48px;
   }
 
   .header-left {
@@ -710,8 +804,8 @@ body {
   }
 
   .logo {
-    height: 38px;
-    max-width: 96px;
+    height: 34px;
+    max-width: 90px;
   }
 
   .branding {
@@ -734,10 +828,7 @@ body {
   }
 
   #controls {
-    right: 10px;
-    bottom: calc(82px + env(safe-area-inset-bottom));
-    left: 10px;
-    padding: 12px;
+    padding: 10px 14px calc(14px + env(safe-area-inset-bottom));
   }
 
   .panel-heading {
@@ -753,21 +844,24 @@ body {
   }
 
   .panel-toggle {
-    height: 38px;
-    padding: 0 12px;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
   }
 
-  .route-actions,
+  .route-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .nav-buttons {
-    grid-template-columns: 1fr;
-    flex-direction: column;
+    flex-direction: row;
   }
 
   #findRoute,
   .secondary-action,
   .nav-btn,
-  #controls select {
-    min-height: 46px;
+  .location-input-wrap input {
+    min-height: 48px;
     font-size: 16px;
   }
 }

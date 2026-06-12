@@ -1,0 +1,18 @@
+{
+  "name": "D.Y. Patil Campus Navigation",
+  "short_name": "Campus Nav",
+  "description": "Smart campus navigation for D.Y. Patil University",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#711616",
+  "theme_color": "#711616",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "University Logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

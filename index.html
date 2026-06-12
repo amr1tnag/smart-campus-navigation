@@ -7,6 +7,12 @@
 
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#711616" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Campus Nav" />
 </head>
 
 <body>
@@ -27,6 +33,7 @@
   <div id="map"></div>
 
   <div id="controls">
+    <div class="drag-handle" id="dragHandle"></div>
     <div class="control-content">
       <div class="panel-heading">
         <div>
@@ -55,6 +62,9 @@
             autocomplete="off"
             spellcheck="false"
           />
+          <button id="gpsBtn" class="gps-btn" type="button" title="Use my location">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 2"/></svg>
+          </button>
           <datalist id="start-list"></datalist>
         </div>
 
@@ -64,12 +74,13 @@
             type="text"
             id="end"
             list="end-list"
-            placeholder="Search end location…"
+            placeholder="Search or tap map…"
             autocomplete="off"
             spellcheck="false"
           />
           <datalist id="end-list"></datalist>
         </div>
+        <p class="tap-hint" id="tapHint">Tip: tap the map to set destination</p>
 
         <button id="swapRoute" class="secondary-action" type="button">⇅ Swap</button>
 
@@ -121,11 +132,31 @@
 <script src="js/app.js"></script>
 
 <script>
-  var map = L.map('map').setView([19.0443, 73.0245], 17);
+  var map = L.map('map', { zoomControl: true, tap: true }).setView([19.0443, 73.0245], 17);
 
   L.tileLayer("https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=YmEOZSxLEE87oOVe10Ps", {
     maxZoom: 22,
   }).addTo(map);
+
+  map.on('click', function(e) {
+    if (!window.tapMode) return;
+    const endInput = document.getElementById('end');
+    const lat = e.latlng.lat.toFixed(5);
+    const lng = e.latlng.lng.toFixed(5);
+
+    if (window.tapMarker) map.removeLayer(window.tapMarker);
+    window.tapMarker = L.marker(e.latlng, {
+      icon: L.divIcon({
+        className: '',
+        html: '<div style="width:14px;height:14px;background:#8d1f1f;border:3px solid white;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,0.4)"></div>',
+        iconAnchor: [7, 7]
+      })
+    }).addTo(map);
+
+    endInput.value = `Pin (${lat}, ${lng})`;
+    window._tapCoords = e.latlng;
+    endInput.blur();
+  });
 </script>
 
 </body>

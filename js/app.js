@@ -458,6 +458,70 @@ function speak(text) {
   setTimeout(() => synth.speak(utter), 100);
 }
 
+// ================= GPS =================
+document.getElementById("gpsBtn").addEventListener("click", () => {
+  const btn = document.getElementById("gpsBtn");
+  if (!navigator.geolocation) {
+    showToast("GPS not available on this device");
+    return;
+  }
+
+  btn.classList.add("gps-loading");
+  btn.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      btn.classList.remove("gps-loading");
+      btn.disabled = false;
+
+      const { latitude, longitude } = pos.coords;
+      map.setView([latitude, longitude], 18);
+
+      if (window._gpsMarker) map.removeLayer(window._gpsMarker);
+      window._gpsMarker = L.circleMarker([latitude, longitude], {
+        radius: 8,
+        color: "#2563eb",
+        fillColor: "#3b82f6",
+        fillOpacity: 0.9,
+        weight: 3
+      }).bindPopup("You are here").addTo(map);
+
+      document.getElementById("start").value = "My Location";
+      window._gpsCoords = { lat: latitude, lng: longitude };
+      showToast("Location found! Now pick your destination.", "success");
+    },
+    (err) => {
+      btn.classList.remove("gps-loading");
+      btn.disabled = false;
+      const msgs = {
+        1: "Location permission denied",
+        2: "Location unavailable",
+        3: "Location request timed out"
+      };
+      showToast(msgs[err.code] || "Could not get location");
+    },
+    { timeout: 10000, maximumAge: 30000 }
+  );
+});
+
+// ================= MAP TAP TO SET DESTINATION =================
+let tapMode = false;
+let tapMarker = null;
+
+function setTapMode(active) {
+  tapMode = active;
+  document.getElementById("map").style.cursor = active ? "crosshair" : "";
+  document.getElementById("tapHint").textContent = active
+    ? "Tap the map to set destination…"
+    : "Tip: tap the map to set destination";
+  document.getElementById("tapHint").classList.toggle("tap-hint-active", active);
+}
+
+document.getElementById("end").addEventListener("focus", () => setTapMode(true));
+document.getElementById("end").addEventListener("blur", () => {
+  setTimeout(() => setTapMode(false), 200);
+});
+
 // ================= PREV / NEXT =================
 document.getElementById("nextStep").addEventListener("click", () => {
   if (currentStepIndex < steps.length - 1) {
