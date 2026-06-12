@@ -3,6 +3,8 @@ let steps = [];
 let currentStepIndex = 0;
 let currentPath = [];
 let currentLayer;
+let startMarker = null;
+let endMarker = null;
 let voiceEnabled = false;
 const defaultMapCenter = [19.0443, 73.0245];
 const defaultMapZoom = 17;
@@ -23,13 +25,30 @@ function showToast(message, type = "error") {
   toast.className = `toast toast-${type}`;
   toast.textContent = message;
   container.appendChild(toast);
-
   requestAnimationFrame(() => toast.classList.add("toast-visible"));
-
   setTimeout(() => {
     toast.classList.remove("toast-visible");
     toast.addEventListener("transitionend", () => toast.remove(), { once: true });
   }, 3200);
+}
+
+// ================= HAVERSINE (for nearest-node snapping) =================
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function nearestNamedLocation(lat, lng, locationMarkers) {
+  let best = null, bestDist = Infinity;
+  for (const loc of locationMarkers) {
+    const d = haversine(lat, lng, loc.lat, loc.lng);
+    if (d < bestDist) { bestDist = d; best = loc; }
+  }
+  return best;
 }
 
 // ================= MARKER CATEGORIES =================
@@ -148,15 +167,9 @@ fetch("campus_nodes_edges.json")
     const endList = document.getElementById("end-list");
 
     const sortedNames = locationMarkers.map(l => l.name).sort();
-
     sortedNames.forEach((name) => {
-      const opt1 = document.createElement("option");
-      opt1.value = name;
-      startList.appendChild(opt1);
-
-      const opt2 = document.createElement("option");
-      opt2.value = name;
-      endList.appendChild(opt2);
+      const opt1 = document.createElement("option"); opt1.value = name; startList.appendChild(opt1);
+      const opt2 = document.createElement("option"); opt2.value = name; endList.appendChild(opt2);
     });
 
     document.getElementById("voiceToggle").addEventListener("change", (e) => {
@@ -167,6 +180,10 @@ fetch("campus_nodes_edges.json")
       const tmp = startInput.value;
       startInput.value = endInput.value;
       endInput.value = tmp;
+      // swap any snapped coords too
+      const tmpCoords = window._gpsCoords;
+      window._gpsCoords = window._tapCoords;
+      window._tapCoords = tmpCoords;
     });
 
     document.getElementById("clearRoute").addEventListener("click", clearRoute);
@@ -178,13 +195,29 @@ fetch("campus_nodes_edges.json")
       L.polyline([[from.lat, from.lng], [to.lat, to.lng]], { color: "gray", weight: 1, opacity: 0.5 }).addTo(map);
     });
 
-    // ================= ROUTE BUTTON =================
-    document.getElementById("findRoute").addEventListener("click", () => {
-      const startName = startInput.value.trim();
-      const endName = endInput.value.trim();
+    // ================= FIND ROUTE =================
+    function findRoute() {
+      let startName = startInput.value.trim();
+      let endName = endInput.value.trim();
 
       if (!startName) { showToast("Please enter a start location"); return; }
       if (!endName) { showToast("Please enter an end location"); return; }
+
+      // Resolve GPS coords → nearest named location
+      if (window._gpsCoords && startName === "My Location") {
+        const nearest = nearestNamedLocation(window._gpsCoords.lat, window._gpsCoords.lng, locationMarkers);
+        if (nearest) { startName = nearest.name; startInput.value = nearest.name; }
+      }
+      // Resolve tapped map coords → nearest named location
+      if (window._tapCoords && startName.startsWith("Pin (")) {
+        const nearest = nearestNamedLocation(window._tapCoords.lat, window._tapCoords.lng, locationMarkers);
+        if (nearest) { startName = nearest.name; startInput.value = nearest.name; }
+      }
+      if (window._tapCoords && endName.startsWith("Pin (")) {
+        const nearest = nearestNamedLocation(window._tapCoords.lat, window._tapCoords.lng, locationMarkers);
+        if (nearest) { endName = nearest.name; endInput.value = nearest.name; }
+      }
+
       if (!nodesByName[startName]) { showToast(`"${startName}" not found — pick from the list`); return; }
       if (!nodesByName[endName]) { showToast(`"${endName}" not found — pick from the list`); return; }
       if (startName === endName) { showToast("Start and end cannot be the same location"); return; }
@@ -197,18 +230,13 @@ fetch("campus_nodes_edges.json")
         const startIds = nodesByName[startName].map(n => n.id);
         const endIds = nodesByName[endName].map(n => n.id);
 
-        let bestPath = null;
-        let bestDistance = Infinity;
-
+        let bestPath = null, bestDistance = Infinity;
         for (const s of startIds) {
           for (const e of endIds) {
             const path = dijkstra(graph, s, e);
             if (path.length > 0) {
               const dist = calculateDistance(path);
-              if (dist < bestDistance) {
-                bestDistance = dist;
-                bestPath = path;
-              }
+              if (dist < bestDistance) { bestDistance = dist; bestPath = path; }
             }
           }
         }
@@ -216,12 +244,9 @@ fetch("campus_nodes_edges.json")
         findBtn.disabled = false;
         findBtn.textContent = "Find Route";
 
-        if (!bestPath) {
-          showToast("No route found between these locations");
-          return;
-        }
+        if (!bestPath) { showToast("No route found between these locations"); return; }
 
-        drawPath(bestPath);
+        drawPath(bestPath, startName, endName);
         currentPath = bestPath;
 
         const distance = bestDistance.toFixed(0);
@@ -235,13 +260,49 @@ fetch("campus_nodes_edges.json")
         currentStepIndex = 0;
 
         document.getElementById("directionsCard").hidden = false;
+        document.getElementById("shareBtn").hidden = false;
         showStep();
         speak(steps[currentStepIndex]);
         focusOnStep(currentPath, 0);
 
+        // Update share URL
+        const url = new URL(window.location.href);
+        url.searchParams.set("from", startName);
+        url.searchParams.set("to", endName);
+        window.history.replaceState({}, "", url);
+
         showToast(`Route found: ${distance} m, ~${time} min`, "success");
       }, 0);
+    }
+
+    document.getElementById("findRoute").addEventListener("click", findRoute);
+
+    // Enter key triggers find route
+    [startInput, endInput].forEach(input => {
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { input.blur(); findRoute(); }
+      });
     });
+
+    // ================= SHARE BUTTON =================
+    document.getElementById("shareBtn").addEventListener("click", () => {
+      const url = window.location.href;
+      if (navigator.share) {
+        navigator.share({ title: "Campus Route", url });
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast("Link copied!", "success"));
+      }
+    });
+
+    // ================= LOAD FROM URL PARAMS =================
+    const params = new URLSearchParams(window.location.search);
+    const fromParam = params.get("from");
+    const toParam = params.get("to");
+    if (fromParam && toParam && nodesByName[fromParam] && nodesByName[toParam]) {
+      startInput.value = fromParam;
+      endInput.value = toParam;
+      findRoute();
+    }
   })
   .catch(() => {
     showToast("Failed to load campus data. Please refresh.");
@@ -314,8 +375,20 @@ function calculateDistance(path) {
 }
 
 // ================= DRAW PATH =================
-function drawPath(path) {
+function makePinIcon(color, label) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="route-pin" style="background:${color}"><span>${label}</span></div>`,
+    iconSize: [28, 36],
+    iconAnchor: [14, 34],
+    popupAnchor: [0, -34]
+  });
+}
+
+function drawPath(path, startName, endName) {
   if (currentLayer) map.removeLayer(currentLayer);
+  if (startMarker) { map.removeLayer(startMarker); startMarker = null; }
+  if (endMarker) { map.removeLayer(endMarker); endMarker = null; }
 
   const coords = path.map(id => {
     const n = graph.nodes.get(id);
@@ -323,21 +396,34 @@ function drawPath(path) {
   });
 
   currentLayer = L.polyline(coords, { color: "#800000", weight: 5 }).addTo(map);
-  map.fitBounds(currentLayer.getBounds());
+  map.fitBounds(currentLayer.getBounds(), { padding: [40, 40] });
+
+  const first = graph.nodes.get(path[0]);
+  const last = graph.nodes.get(path[path.length - 1]);
+
+  startMarker = L.marker([first.lat, first.lng], { icon: makePinIcon("#15803d", "A"), zIndexOffset: 500 })
+    .bindPopup(`<strong>Start:</strong> ${startName}`)
+    .addTo(map);
+
+  endMarker = L.marker([last.lat, last.lng], { icon: makePinIcon("#8d1f1f", "B"), zIndexOffset: 500 })
+    .bindPopup(`<strong>End:</strong> ${endName}`)
+    .addTo(map);
 }
 
 function clearRoute() {
-  if (currentLayer) {
-    map.removeLayer(currentLayer);
-    currentLayer = null;
-  }
+  if (currentLayer) { map.removeLayer(currentLayer); currentLayer = null; }
+  if (startMarker) { map.removeLayer(startMarker); startMarker = null; }
+  if (endMarker) { map.removeLayer(endMarker); endMarker = null; }
 
   steps = [];
   currentStepIndex = 0;
   currentPath = [];
+  window._gpsCoords = null;
+  window._tapCoords = null;
 
   document.getElementById("routeStats").hidden = true;
   document.getElementById("directionsCard").hidden = true;
+  document.getElementById("shareBtn").hidden = true;
   document.getElementById("distance").innerText = "-";
   document.getElementById("time").innerText = "-";
   document.getElementById("stepText").innerText = "Click Find Route";
@@ -346,6 +432,12 @@ function clearRoute() {
 
   updateNavButtons();
   updateMiniNav();
+
+  // Clear URL params
+  const url = new URL(window.location.href);
+  url.searchParams.delete("from");
+  url.searchParams.delete("to");
+  window.history.replaceState({}, "", url);
 
   if (window.speechSynthesis?.speaking) window.speechSynthesis.cancel();
   map.setView(defaultMapCenter, defaultMapZoom);
@@ -432,13 +524,16 @@ function updateMiniNav() {
   const miniText = document.getElementById("miniStepText");
   const miniPrev = document.getElementById("miniPrev");
   const miniNext = document.getElementById("miniNext");
+  const defaultHeading = document.querySelector(".panel-heading-default");
 
   if (steps.length === 0) {
-    miniNav.hidden = true;
+    miniNav.classList.remove("is-visible");
+    if (defaultHeading) defaultHeading.style.display = "";
     return;
   }
 
-  miniNav.hidden = false;
+  miniNav.classList.add("is-visible");
+  if (defaultHeading) defaultHeading.style.display = "none";
   miniText.textContent = `${currentStepIndex + 1}/${steps.length}`;
   miniPrev.disabled = currentStepIndex === 0;
   miniNext.disabled = currentStepIndex === steps.length - 1;
@@ -449,7 +544,6 @@ function renderAllSteps() {
   list.innerHTML = steps.map((s, i) =>
     `<li class="${i === currentStepIndex ? "active-step" : ""}">${s}</li>`
   ).join("");
-
   const active = list.querySelector(".active-step");
   if (active) active.scrollIntoView({ block: "nearest" });
 }
@@ -461,8 +555,7 @@ function focusOnStep(path, stepIndex) {
   const to = graph.nodes.get(path[Math.min(stepIndex + 1, path.length - 1)]);
   if (!from || !to) return;
   map.fitBounds(L.latLngBounds([from.lat, from.lng], [to.lat, to.lng]), {
-    padding: [50, 50],
-    maxZoom: 19
+    padding: [50, 50], maxZoom: 19
   });
 }
 
@@ -472,19 +565,14 @@ function speak(text) {
   const synth = window.speechSynthesis;
   if (synth.speaking) synth.cancel();
   const utter = new SpeechSynthesisUtterance(" " + text);
-  utter.rate = 0.95;
-  utter.pitch = 1;
-  utter.volume = 1;
+  utter.rate = 0.95; utter.pitch = 1; utter.volume = 1;
   setTimeout(() => synth.speak(utter), 100);
 }
 
 // ================= GPS =================
 document.getElementById("gpsBtn").addEventListener("click", () => {
   const btn = document.getElementById("gpsBtn");
-  if (!navigator.geolocation) {
-    showToast("GPS not available on this device");
-    return;
-  }
+  if (!navigator.geolocation) { showToast("GPS not available on this device"); return; }
 
   btn.classList.add("gps-loading");
   btn.disabled = true;
@@ -499,25 +587,17 @@ document.getElementById("gpsBtn").addEventListener("click", () => {
 
       if (window._gpsMarker) map.removeLayer(window._gpsMarker);
       window._gpsMarker = L.circleMarker([latitude, longitude], {
-        radius: 8,
-        color: "#2563eb",
-        fillColor: "#3b82f6",
-        fillOpacity: 0.9,
-        weight: 3
+        radius: 8, color: "#2563eb", fillColor: "#3b82f6", fillOpacity: 0.9, weight: 3
       }).bindPopup("You are here").addTo(map);
 
-      document.getElementById("start").value = "My Location";
       window._gpsCoords = { lat: latitude, lng: longitude };
+      document.getElementById("start").value = "My Location";
       showToast("Location found! Now pick your destination.", "success");
     },
     (err) => {
       btn.classList.remove("gps-loading");
       btn.disabled = false;
-      const msgs = {
-        1: "Location permission denied",
-        2: "Location unavailable",
-        3: "Location request timed out"
-      };
+      const msgs = { 1: "Location permission denied", 2: "Location unavailable", 3: "Location request timed out" };
       showToast(msgs[err.code] || "Could not get location");
     },
     { timeout: 10000, maximumAge: 30000 }
@@ -525,22 +605,16 @@ document.getElementById("gpsBtn").addEventListener("click", () => {
 });
 
 // ================= MAP TAP TO SET DESTINATION =================
-let tapMode = false;
-let tapMarker = null;
-
 function setTapMode(active) {
-  tapMode = active;
+  window.tapMode = active;
   document.getElementById("map").style.cursor = active ? "crosshair" : "";
-  document.getElementById("tapHint").textContent = active
-    ? "Tap the map to set destination…"
-    : "Tip: tap the map to set destination";
-  document.getElementById("tapHint").classList.toggle("tap-hint-active", active);
+  const hint = document.getElementById("tapHint");
+  hint.textContent = active ? "Tap the map to set destination…" : "Tip: tap the map to set destination";
+  hint.classList.toggle("tap-hint-active", active);
 }
 
 document.getElementById("end").addEventListener("focus", () => setTapMode(true));
-document.getElementById("end").addEventListener("blur", () => {
-  setTimeout(() => setTapMode(false), 200);
-});
+document.getElementById("end").addEventListener("blur", () => { setTimeout(() => setTapMode(false), 200); });
 
 // ================= PREV / NEXT =================
 function goNext() {
