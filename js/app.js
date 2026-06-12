@@ -160,17 +160,105 @@ fetch("campus_nodes_edges.json")
 
     addMarkerLegend();
 
-    // ================= POPULATE DATALISTS =================
+    // ================= AUTOCOMPLETE =================
     const startInput = document.getElementById("start");
     const endInput = document.getElementById("end");
-    const startList = document.getElementById("start-list");
-    const endList = document.getElementById("end-list");
 
-    const sortedNames = locationMarkers.map(l => l.name).sort();
-    sortedNames.forEach((name) => {
-      const opt1 = document.createElement("option"); opt1.value = name; startList.appendChild(opt1);
-      const opt2 = document.createElement("option"); opt2.value = name; endList.appendChild(opt2);
-    });
+    const categoryColors = {
+      academic: "#8d1f1f", building: "#475569", gate: "#0f766e",
+      hospital: "#dc2626", hostel: "#7c3aed", lab: "#2563eb",
+      parking: "#0284c7", sports: "#15803d", worship: "#b45309", default: "#334155"
+    };
+
+    function setupAutocomplete(input, dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      let highlighted = -1;
+
+      function getMatches(query) {
+        if (!query) return locationMarkers.slice(0, 8);
+        const q = query.toLowerCase();
+        return locationMarkers
+          .filter(l => l.name.toLowerCase().includes(q))
+          .slice(0, 8);
+      }
+
+      function renderDropdown(matches) {
+        highlighted = -1;
+        if (matches.length === 0) {
+          dropdown.innerHTML = `<div class="autocomplete-empty">No locations found</div>`;
+        } else {
+          dropdown.innerHTML = matches.map((loc, i) => `
+            <div class="autocomplete-item" data-name="${loc.name}" data-index="${i}" role="option">
+              <span class="autocomplete-item-dot" style="background:${categoryColors[loc.category] || '#334155'}"></span>
+              ${loc.name}
+            </div>
+          `).join("");
+        }
+        dropdown.classList.add("is-open");
+        input.setAttribute("aria-expanded", "true");
+      }
+
+      function closeDropdown() {
+        dropdown.classList.remove("is-open");
+        input.setAttribute("aria-expanded", "false");
+        highlighted = -1;
+      }
+
+      function selectItem(name) {
+        input.value = name;
+        closeDropdown();
+      }
+
+      function updateHighlight(items, newIndex) {
+        items.forEach((el, i) => el.classList.toggle("is-highlighted", i === newIndex));
+        highlighted = newIndex;
+      }
+
+      input.addEventListener("input", () => {
+        renderDropdown(getMatches(input.value.trim()));
+      });
+
+      input.addEventListener("focus", () => {
+        renderDropdown(getMatches(input.value.trim()));
+      });
+
+      input.addEventListener("keydown", (e) => {
+        const items = [...dropdown.querySelectorAll(".autocomplete-item")];
+        if (!items.length) return;
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          updateHighlight(items, Math.min(highlighted + 1, items.length - 1));
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          updateHighlight(items, Math.max(highlighted - 1, 0));
+        } else if (e.key === "Enter") {
+          if (highlighted >= 0 && items[highlighted]) {
+            e.preventDefault();
+            selectItem(items[highlighted].dataset.name);
+          }
+        } else if (e.key === "Escape") {
+          closeDropdown();
+        }
+      });
+
+      dropdown.addEventListener("mousedown", (e) => {
+        const item = e.target.closest(".autocomplete-item");
+        if (item) { e.preventDefault(); selectItem(item.dataset.name); }
+      });
+
+      dropdown.addEventListener("touchend", (e) => {
+        const item = e.target.closest(".autocomplete-item");
+        if (item) { e.preventDefault(); selectItem(item.dataset.name); }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) closeDropdown();
+      });
+    }
+
+    setupAutocomplete(startInput, "start-dropdown");
+    setupAutocomplete(endInput, "end-dropdown");
 
     document.getElementById("voiceToggle").addEventListener("change", (e) => {
       voiceEnabled = e.target.checked;

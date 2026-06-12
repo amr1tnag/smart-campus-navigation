@@ -62,15 +62,18 @@
           <input
             type="text"
             id="start"
-            list="start-list"
             placeholder="Search start location…"
             autocomplete="off"
             spellcheck="false"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="start-dropdown"
           />
           <button id="gpsBtn" class="gps-btn" type="button" title="Use my location">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-dasharray="2 2"/></svg>
           </button>
-          <datalist id="start-list"></datalist>
+          <div class="autocomplete-list" id="start-dropdown" role="listbox"></div>
         </div>
 
         <label for="end">End Location</label>
@@ -78,12 +81,15 @@
           <input
             type="text"
             id="end"
-            list="end-list"
             placeholder="Search or tap map…"
             autocomplete="off"
             spellcheck="false"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="end-dropdown"
           />
-          <datalist id="end-list"></datalist>
+          <div class="autocomplete-list" id="end-dropdown" role="listbox"></div>
         </div>
         <p class="tap-hint" id="tapHint">Tip: tap the map to set destination</p>
 
@@ -147,6 +153,10 @@
   L.tileLayer("https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=YmEOZSxLEE87oOVe10Ps", {
     maxZoom: 22,
   }).addTo(map);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
 
   map.on('click', function(e) {
     if (!window.tapMode) return;
